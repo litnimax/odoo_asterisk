@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+        
+        <record id="asterisk_channels_action" model="ir.actions.client">                                                                                                        
+            <field name="name">Current channels</field>                                                                                                                            
+            <field name="tag">barrier.channels</field>
+        </record> 
+        
+        <menuitem id="asterisk_channels_menu" parent='pbx_reports_menu' name='Channels'
+            action='asterisk_channels_action'/>
+           
+
+    <template id="asterisk_channels_assets_backend" name="asterisk channels assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/barrier/static/src/js/channels.js"></script>
+        </xpath>
+	</template>
+
+    </data>
+</openerp>

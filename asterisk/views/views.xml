@@ -1,0 +1,8 @@
+<openerp><data>
+
+    <menuitem id="pbx_top_menu" name="PBX" sequence="30"/>
+
+    <menuitem id="reports_menu" name="Reports"
+              parent="pbx_top_menu" sequence="40"/>
+
+</data></openerp>

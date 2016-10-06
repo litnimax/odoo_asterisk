@@ -1,0 +1,45 @@
+<openerp><data>
+
+    <record id="cdr_action" model="ir.actions.act_window">
+        <field name="name">CDR Action</field>
+        <field name="res_model">pbx.cdr</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="cdr_menu" parent="reports_menu" sequence="10"
+              name="CDR" action="cdr_action"/>
+
+    <record id="cdr_list" model="ir.ui.view">
+        <field name="name">CDR List</field>
+        <field name="model">pbx.cdr</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="true" edit="false" delete="false">
+                <field name="src"/>
+                <field name="dst"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cdr_form" model="ir.ui.view">
+        <field name="name">CDR Form</field>
+        <field name="model">pbx.cdr</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Basic Info">
+                            <field name="src"/>
+                            <field name="dst"/>
+                        </group>
+                        <group string="Additional Info">
+                            <field name="uniqueid"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+</data></openerp>
