@@ -1,0 +1,133 @@
+<openerp>
+    <data>
+
+        <record id='asterisk_cdr_action' model='ir.actions.act_window'>
+            <field name='name'>Call Details</field>
+            <field name='res_model'>asterisk.cdr</field>
+            <field name="view_mode">tree,form,graph</field>
+        </record>
+
+        <menuitem id="asterisk_cdr_menu" parent='asterisk_base.asterisk_reports_menu' name='Call Details'
+             action='asterisk_cdr_action' sequence='100'/>
+
+
+        <record id='asterisk_cdr_list' model='ir.ui.view'>
+            <field name='name'>asterisk.cdr.list</field>
+            <field name='model'>asterisk.cdr</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree create='false' string='CDR'>
+                    <field name='started'/>
+                    <field name='src'/>
+                    <field name='dst'/>
+                    <field name='billsec'/>
+                    <field name='disposition'/>
+                    <field name='lp'/>
+                    <field name='rlp'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='asterisk_cdr_form' model='ir.ui.view'>
+            <field name='name'>asterisk.cdr.form</field>
+            <field name='model'>asterisk.cdr</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <form edit='false' create="false" string='cdr'>
+                    <sheet>
+                        <group>
+                            <group colspan='1'>
+                                <field name='started' readonly='1'/>
+                                <field name='answered' readonly='1'/>
+                                <field name='ended' readonly='1'/>
+                                <field name='disposition' readonly='1'/>
+                                <field name='src' readonly='1'/>
+                                <field name='dst' readonly='1'/>
+                                <field name='duration' readonly='1'/>
+                                <field name='billsec' readonly='1'/>
+                                <field name='accountcode' readonly='1'/>
+                                <field name='uniqueid' readonly='1'/>
+                                <field name='userfield' readonly='1'/>
+                            </group>
+                            <group>
+                                <field name='clid' readonly='1'/>
+                                <field name='dcontext' readonly='1'/>
+                                <field name='channel' readonly='1'/>
+                                <field name='dstchannel' readonly='1'/>
+                                <field name='peeraccount' readonly='1'/>
+                                <field name='linkedid' readonly='1'/>
+                                <field name='lastapp' readonly='1'/>
+                                <field name='lastdata' readonly='1'/>
+                                <field name='amaflags' readonly='1'/>
+                            </group>
+                        </group>
+                        <group string="Recording" attrs="{'invisible': [('recording_filename', '=', False)]}">
+                            <field name="recording_filename" invisible="1"/>
+                            <group>
+                                <field name="recording_widget" widget="html" nolabel="1"
+                                    attrs="{'invisible': [('recording_filename', '=', False)]}"/>
+                            </group>
+                            <group>
+                            <field name="recording_download" widget="html" nolabel="1"
+                                attrs="{'invisible': [('recording_filename', '=', False)]}"/>
+                            </group>
+                        </group>
+                        <group string="QoS">
+                            <group>
+                                <field name="lp"/>
+                                <field name="rlp"/>
+                                <field name="rtt"/>
+                                <field name="rxjitter"/>
+                                <field name="txjitter"/>
+                            </group>
+                            <group>
+                                <field name="rxcount"/>
+                                <field name="txcount"/>
+                                <field name="ssrc"/>
+                                <field name="themssrc"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="asterisk_cdr_graph" model="ir.ui.view">
+            <field name="name">asterisk.cdr.graph</field>
+            <field name="model">asterisk.cdr</field>
+
+            <field name="arch" type="xml">
+                <graph orientation="horizontal" string="Calls" stacked="True">
+                    <field name="started" type="row"/>
+                    <field name='disposition' type='col'/>
+                    <field name="answered" type="measure" operator='+'/>
+                </graph>
+            </field>
+        </record>
+
+        <record id='asterisk_cdr_search' model='ir.ui.view'>
+            <field name='name'>asterisk.cdr.search</field>
+            <field name='model'>asterisk.cdr</field>
+            <field name='type'>search</field>
+            <field name='arch' type='xml'>
+                <search string="CDR Request">
+                    <field name="src"/>
+                    <field name="dst"/>
+                    <field name="started"/>
+                    <filter string="Answered" domain="[('disposition','=','ANSWERED')]"/>
+                    <filter string="Busy" domain="[('disposition','=','BUSY')]"/>
+                    <filter string="No answer" domain="[('disposition','=','NO ANSWER')]"/>
+                    <filter string="Failed" domain="[('disposition','=','FAILED')]"/>
+                    <filter string="Congestion" domain="[('disposition','=','CONGESTION')]"/>
+                    <filter string="Src" icon='fa-phone'  domain="[]" context="{'group_by':'src'}"/>
+                    <filter string="Dst" icon='STOCK_ADD' domain="[]" context="{'group_by':'dst'}"/>
+                    <filter string="Start" domain="[]" context="{'group_by':'start'}"/>
+                    <filter string="Disposition" domain="[]" context="{'group_by':'disposition'}"/>
+                </search>
+            </field>
+        </record>
+
+        <function name="grant_asterisk_access" model="asterisk.cdr"/>
+
+    </data>
+</openerp>

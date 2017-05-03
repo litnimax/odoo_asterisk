@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <menuitem id="asterisk_menu" name="Asterisk" sequence="10"/>
+
+  <menuitem id="asterisk_reports_menu" parent="asterisk_menu" sequence="100"
+            name="Reports"/>
+
+  <record model="ir.actions.act_window" id="asterisk_configfile_action">
+      <field name="name">Asterisk Conf Files</field>
+      <field name="res_model">asterisk.conf</field>
+      <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="asterisk_configfile_menu" parent="asterisk_menu" sequence="50"
+      action="asterisk_configfile_action" name="Files"/>
+
+  <record model="ir.ui.view" id="asterisk_configfile_list">
+      <field name="name">asterisk config files</field>
+      <field name="model">asterisk.conf</field>
+      <field name="arch" type="xml">
+          <tree>
+              <field name="filename"/>
+          </tree>
+      </field>
+  </record>
+
+  <record model="ir.ui.view" id="asterisk_configfile_form">
+      <field name="name">asterisk config file form</field>
+      <field name="model">asterisk.conf</field>
+      <field name="arch" type="xml">
+          <form>
+              <sheet>
+                <div class="oe_title">
+                    <label for="filename" class="oe_read_only"/>
+                    <h1><field name="filename"/></h1>
+                </div>
+                <group>
+                    <field name="content"/>
+                </group>
+              </sheet>
+          </form>
+      </field>
+  </record>
+
+</odoo>

@@ -1,0 +1,7 @@
+<templates>
+
+    <t t-name="asterisk_conference.participants">
+        <div class='participant_list'/>
+    </t>
+
+</templates>

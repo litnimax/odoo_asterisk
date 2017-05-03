@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="CodeMirror">
+    <t t-if="widget.get('effective_readonly')">
+        <i><span class="oe_form_char_content"></span></i>
+    </t>
+  </t>
+
+</templates>

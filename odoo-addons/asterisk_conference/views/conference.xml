@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp><data>
+
+    <record id="participant_action" model="ir.actions.client">
+        <field name="name">Participants</field>
+        <field name="tag">asterisk_conference.participants</field>
+    </record>
+
+    <menuitem id="participant_menu" parent='conference_main_menu'
+              name='Participants' action='participant_action'/>
+
+
+    <template id="participant_assets_backend" name="conference participant assets"
+              inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript"
+                    src="/asterisk_conference/static/src/js/participants.js"></script>
+        </xpath>
+	</template>
+
+
+    <record model="ir.ui.view" id="conference_list">
+        <field name="name">asterisk_conference.conference list</field>
+        <field name="model">asterisk_conference.conference</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="number"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="conference_form">
+        <field name="name">asterisk_conference.conference form</field>
+        <field name="model">asterisk_conference.conference</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Participants" type="action" name="%(participant_action)d"/>
+                    <button string="Sync" type="object" name="sync_participants"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Info">
+                            <field name="name"/>
+                            <field name="number"/>
+                        </group>
+                        <group string="Profile">
+                            <field name="conference_profile"/>
+                            <field name="last_synced" readonly="1"/>
+                        </group>
+                        <group string="Access">
+                            <field name="is_public"/>
+                            <field name="public_participant_profile"
+                                   attrs="{'invisible': [('is_public','!=', True)]}"/>
+                        </group>
+                    </group>
+                    <group string="Participants">
+                        <field name="participants" nolabel="1" context="{'form_view_ref': None}">
+                            <tree edit="true" create="true" delete="true">
+                                <button icon="gtk-clear" type="object" name="kick"/>
+                                <button icon="gtk-new" type="object" name="onoff_admin"/>
+                                <button icon="gtk-go-up" type="object" name="onoff_mark"/>
+                                <field name="phone"/>
+                                <field name="name"/>
+                                <field name="is_admin"/>
+                                <field name="is_muted"/>
+                                <button icon="gtk-media-pause" type="object" name="onoff_mute"
+                                        attrs="{'invisible': [('is_muted','=', False)]}"/>
+                                <button icon="gtk-media-play" type="object" name="onoff_mute"
+                                        attrs="{'invisible': [('is_muted','!=', False)]}"/>
+
+                                <field name="is_marked"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="conference_action">
+        <field name="name">Conference</field>
+        <field name="res_model">asterisk_conference.conference</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Telephony" id="telephony_top_menu"/>
+    <menuitem name="Conference" id="conference_main_menu" parent="telephony_top_menu"/>
+    <menuitem name="Conference" parent="conference_main_menu"
+              action="conference_action" id="conference_menu"/>
+
+    <!--
+    <record id="conference_search" model="ir.ui.view">
+        <field name="name">asterisk_conference.conference.search</field>
+        <field name="model">asterisk_conference.conference</field>
+        <field name="arch" type="xml">
+            <search>
+                <group string="Filter by">
+                    <filter string="" domain="[('','=','')]"/>
+                </group>
+                <group string="Group By">
+                    <filter string="" name="by_result" domain="[]"
+                            context="{'group_by': ''}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    -->
+
+</data></openerp>
