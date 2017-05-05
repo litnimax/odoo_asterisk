@@ -4,6 +4,14 @@
 
   <template id="assets_backend" name="asterisk_base assets" inherit_id="web.assets_backend">
     <xpath expr="." position="inside">
+      <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/codemirror/lib/codemirror.css"/>
+      <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/codemirror/theme/blackboard.css"/>
+      <style>
+        .CodeMirror {
+          border: 1px solid #eee;
+          height: auto;
+        }
+      </style>
       <script type="text/javascript" src="/asterisk_base/static/src/js/asterisk_conf.js"/>
     </xpath>
   </template>

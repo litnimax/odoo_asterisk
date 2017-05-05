@@ -7,4 +7,10 @@
     </t>
   </t>
 
+  <t t-name="AsteriskConf">
+    <textarea id="asterisk_conf" class="asterisk_conf"></textarea>
+
+  </t>
+
+
 </templates>
