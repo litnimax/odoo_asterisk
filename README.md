@@ -9,6 +9,10 @@
 ```sh
 pip install humanize
 ```
+or if you system wide odoo installation:
+```
+apt-get install python-humanize
+```
 
 ### PostgreSQL preparations
 Before installing Odoo Asterisk Application you have to create PostgreSQL role for Asterisk:

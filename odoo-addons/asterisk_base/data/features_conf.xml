@@ -4,6 +4,7 @@
   <data noupdate="1">
     <record id="asterisk_features_conf" model="asterisk.conf">
       <field name="filename">features.conf</field>
+      <field name="server" ref="asterisk_test_server"/>
       <field name="content">;
 ; Sample Call Features (transfer, monitor/mixmonitor, etc) configuration
 ;

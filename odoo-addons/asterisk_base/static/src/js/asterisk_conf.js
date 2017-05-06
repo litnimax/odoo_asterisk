@@ -27,7 +27,8 @@ odoo.define('asterisk_base.form_widgets', function (require) {
           '/asterisk_base/static/lib/codemirror/lib/codemirror.js').then(function() {
               return $.when(
                 ajax.loadJS('/asterisk_base/static/lib/codemirror/mode/asterisk/asterisk.js'),
-                ajax.loadJS('/asterisk_base/static/lib/codemirror/addon/display/autorefresh.js')
+                ajax.loadJS('/asterisk_base/static/lib/codemirror/addon/display/autorefresh.js'),
+                ajax.loadJS('/asterisk_base/static/lib/codemirror/addon/scroll/simplescrollbars.js'),
               )
             });
       }
@@ -49,6 +50,7 @@ odoo.define('asterisk_base.form_widgets', function (require) {
             'autoRefresh': true,
             //'viewportMargin': Infinity,
             'theme': 'blackboard',
+            'scrollbarStyle': 'overlay',
           });
         var value = formats.format_value(this.get('value'), this, '');
         this.myCodeMirror.setValue(value);

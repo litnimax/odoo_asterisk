@@ -7,15 +7,21 @@ class Conf(models.Model):
     _rec_name = 'filename'
 
     filename = fields.Char(required=True)
+    server = fields.Many2one(comodel_name='asterisk.server',
+        required=True)
+    content = fields.Text()
     # Trick to show filename above content when creating new file
     filename_on_create = fields.Char()
-    content = fields.Text()
+    server_on_create = fields.Many2one(comodel_name='asterisk.server',
+        string='Server')
+
 
     _sql_constraints = [
         ('filename', 'unique(filename)', _('This file already exists.'))
     ]
 
-    @api.onchange('filename_on_create', 'filename')
+
+    @api.onchange('filename_on_create', 'filename', 'server', 'server_on_create')
     def _onchange_filename_on_create(self):
         """
         This is used to show filename on the same tab on create. Information tab
@@ -23,5 +29,7 @@ class Conf(models.Model):
         """
         if not self.write_date:
             self.filename = self.filename_on_create
+            self.server = self.server_on_create
         else:
             self.filename_on_create = self.filename
+            self.server_on_create = self.server

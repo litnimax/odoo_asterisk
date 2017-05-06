@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record model="ir.actions.act_window" id="asterisk_server_action">
+      <field name="name">Asterisk Servers</field>
+      <field name="res_model">asterisk.server</field>
+      <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="asterisk_server_menu" parent="asterisk_menu" sequence="100"
+      action="asterisk_server_action" name="Servers"/>
+
+  <record model="ir.ui.view" id="asterisk_server_list">
+      <field name="name">asterisk servers</field>
+      <field name="model">asterisk.server</field>
+      <field name="arch" type="xml">
+          <tree>
+              <field name="name"/>
+              <field name="host"/>
+          </tree>
+      </field>
+  </record>
+
+  <record model="ir.ui.view" id="asterisk_server_form">
+      <field name="name">asterisk server form</field>
+      <field name="model">asterisk.server</field>
+      <field name="arch" type="xml">
+          <form>
+              <sheet>
+                <notebook>
+                  <page string="Settings">
+                    <group>
+                      <group>
+                        <field name='name'/>
+                        <field name='host'/>
+                        <field name='note'/>
+                      </group>
+                      <group>
+                        <field name='ami_port'/>
+                        <field name='http_port'/>
+                        <field name='use_https'/>
+                        <field name='https_port' attrs="{'invisible': [('use_https', '=', False)]}"/>
+                        <field name='certificate' attrs="{'invisible': [('use_https', '=', False)]}"/>
+                        <field name='key' attrs="{'invisible': [('use_https', '=', False)]}"/>
+                      </group>
+                    </group>
+                  </page>
+                  <page string="Information" attrs="{'invisible': [('write_date', '=', False)]}">
+                    <group>
+                      <field name="create_date" string="Created" readonly="1"/>
+                      <field name="create_uid" string="Created By" readonly="1"/>
+                      <field name="write_date" string="Updated" readonly="1"/>
+                      <field name="write_uid" string="Updated By" readonly="1"/>
+                    </group>
+                  </page>
+                </notebook>
+              </sheet>
+          </form>
+      </field>
+  </record>
+
+</odoo>

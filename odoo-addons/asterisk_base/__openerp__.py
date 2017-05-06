@@ -11,9 +11,15 @@
     'application': True,
     'auto_install': False,
     'data': [
-        'templates.xml',
-        'views.xml',
+        'views/views.xml',
+        'views/templates.xml',
+        'views/conf.xml',
+        'views/server.xml',
+        # Data files
+        'data/server.xml',
         'data/features_conf.xml',
+        'data/http_conf.xml',
+        'data/manager_conf.xml',
     ],
     'demo': [
     ],
