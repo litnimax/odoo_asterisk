@@ -45,10 +45,10 @@
                   <page string="Information" attrs="{'invisible': [('write_date', '=', False)]}">
                     <group>
                       <field name="filename"/>
-                      <field name="create_date" string="Created"/>
-                      <field name="create_uid" string="Created By"/>
-                      <field name="write_date" string="Updated"/>
-                      <field name="write_uid" string="Updated By"/>
+                      <field name="create_date" string="Created" readonly="1"/>
+                      <field name="create_uid" string="Created By" readonly="1"/>
+                      <field name="write_date" string="Updated" readonly="1"/>
+                      <field name="write_uid" string="Updated By" readonly="1"/>
                     </group>
                   </page>
                 </notebook>

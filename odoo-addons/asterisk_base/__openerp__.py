@@ -13,6 +13,7 @@
     'data': [
         'templates.xml',
         'views.xml',
+        'data/features_conf.xml',
     ],
     'demo': [
     ],
