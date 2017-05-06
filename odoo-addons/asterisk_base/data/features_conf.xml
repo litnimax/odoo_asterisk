@@ -5,14 +5,10 @@
     <record id="asterisk_features_conf" model="asterisk.conf">
       <field name="filename">features.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="content">;
-; Sample Call Features (transfer, monitor/mixmonitor, etc) configuration
-;
-
-; Note: From Asterisk 12 - All parking lot configuration is now done in res_parking.conf
-
-[general]
-;transferdigittimeout => 3      ; Number of seconds to wait between digits when transferring a call
+      <field name="filename_on_create">features.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
+      <field name="content">[general]
+transferdigittimeout => 3      ; Number of seconds to wait between digits when transferring a call
                                 ; (default is 3 seconds)
 ;xfersound = beep               ; to indicate an attended transfer is complete
 ;xferfailsound = beeperr        ; to indicate a failed transfer

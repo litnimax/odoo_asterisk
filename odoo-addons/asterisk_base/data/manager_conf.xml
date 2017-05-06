@@ -5,12 +5,17 @@
     <record id="asterisk_manager_conf" model="asterisk.conf">
       <field name="filename">manager.conf</field>
       <field name="server" ref="asterisk_test_server"/>
+      <field name="filename_on_create">manager.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">[general]
 enabled = yes
+webenabled = yes
 port = 5038
 bindaddr = 0.0.0.0
 allowmultiplelogin = yes
-webenabled = yes
+displayconnects = no
+timestampevents = yes
+debug = off
 httptimeout = 60
 
 [asterisk_admin]
@@ -18,7 +23,7 @@ secret = admin-secret
 deny=0.0.0.0/0.0.0.0
 permit=0.0.0.0/0.0.0.0
 read = call,cdr,user,config
-write = call,originate,reporting,command,system
+write = call,config,originate,reporting,command,system
       </field>
     </record>
   </data>

@@ -5,20 +5,25 @@
     <record id="asterisk_http_conf" model="asterisk.conf">
       <field name="filename">http.conf</field>
       <field name="server" ref="asterisk_test_server"/>
+      <field name="filename_on_create">http.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">[general]
 enabled=yes
 enablestatic=yes
+servername=Asterisk
 bindaddr=0.0.0.0
 bindport=8088
-prefix=asterisk
-; TLS
-tlsenable=yes
-tlsbindaddr=0.0.0.0:8089
-tlscertfile= /etc/asterisk/ssl/ajam.pem
-tlsprivatekey= /etc/asterisk/ssl/ajam.pem
+prefix=asterisk ;Do not change the prefix!
 
+; Do not remove! Config files are uploaded over here.
 [post_mappings]
-uploads=/var/lib/asterisk/uploads
+uploads = /etc/asterisk
+
+; TLS support - currently not implemented.
+tlsenable=no
+tlsbindaddr=0.0.0.0:8089
+;tlscertfile=/path/to/certificate.pem
+;tlsprivatekey=/path/to/private.pem
       </field>
     </record>
   </data>

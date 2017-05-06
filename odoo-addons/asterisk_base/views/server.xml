@@ -26,6 +26,10 @@
       <field name="model">asterisk.server</field>
       <field name="arch" type="xml">
           <form>
+              <header>
+                  <button name="sync_conf" type="object"
+                      string="Sync Configuration" class="oe_highlight oe_read_only"/>
+              </header>
               <sheet>
                 <notebook>
                   <page string="Settings">
@@ -36,6 +40,8 @@
                         <field name='note'/>
                       </group>
                       <group>
+                        <field name='ami_username'/>
+                        <field name='ami_password'/>
                         <field name='ami_port'/>
                         <field name='http_port'/>
                         <field name='use_https'/>
@@ -47,10 +53,23 @@
                   </page>
                   <page string="Information" attrs="{'invisible': [('write_date', '=', False)]}">
                     <group>
-                      <field name="create_date" string="Created" readonly="1"/>
-                      <field name="create_uid" string="Created By" readonly="1"/>
-                      <field name="write_date" string="Updated" readonly="1"/>
-                      <field name="write_uid" string="Updated By" readonly="1"/>
+                      <group>
+                        <field name="create_date" string="Created" readonly="1"/>
+                        <field name="create_uid" string="Created by" readonly="1"/>
+                        <field name="write_date" string="Updated" readonly="1"/>
+                        <field name="write_uid" string="Updated by" readonly="1"/>
+                      </group>
+                      <group attrs="{'invisible': [('sync_date', '=', False)]}">
+                        <field name="sync_date"/>
+                        <field name="sync_uid"/>
+                      </group>
+                    </group>
+                  </page>
+                  <page string="Configuration files" attrs="{'invisible': [('write_date', '=', False)]}">
+                    <group>
+                      <field name="conf_files" nolabel="1"
+                          context="{'default_server': active_id,
+                                    'default_server_on_create': active_id}}"/>
                     </group>
                   </page>
                 </notebook>

@@ -43,7 +43,7 @@
                     <group>
                       <group>
                         <field name="filename"/>
-                        <field name="server"/>
+                        <field name="server" options="{'no_create': True}"/>
                       </group>
                       <group>
                         <field name="create_date" string="Created" readonly="1"/>

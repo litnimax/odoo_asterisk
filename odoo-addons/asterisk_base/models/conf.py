@@ -1,7 +1,10 @@
-from openerp import models, fields, api, _
+import logging
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, Warning, ValidationError
 
+_logger = logging.getLogger(__name__)
 
-class Conf(models.Model):
+class AsteriskConf(models.Model):
     _name = 'asterisk.conf'
     _description = 'Configuration Files'
     _rec_name = 'filename'
@@ -22,7 +25,7 @@ class Conf(models.Model):
 
 
     @api.onchange('filename_on_create', 'filename', 'server', 'server_on_create')
-    def _onchange_filename_on_create(self):
+    def _onchange_on_create(self):
         """
         This is used to show filename on the same tab on create. Information tab
         is invisible.
