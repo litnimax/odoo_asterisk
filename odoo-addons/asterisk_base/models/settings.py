@@ -5,7 +5,10 @@ class AsteriskBaseSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     _name = 'asterisk.settings'
 
-    no_asterisk = fields.Boolean(string='No Asterisk')
+    no_asterisk = fields.Boolean(string='No Asterisk',
+        help='When this is set all communication with Asterisk is considered successful.\n'
+             'This can be used to test the management interface without errors when '
+             'there is not Asterisk server connected.')
 
     @api.multi
     def set_params(self):
