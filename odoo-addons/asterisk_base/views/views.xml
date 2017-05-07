@@ -6,4 +6,8 @@
   <menuitem id="asterisk_reports_menu" parent="asterisk_menu" sequence="100"
             name="Reports"/>
 
+  <menuitem id="asterisk_settings_menu" parent="asterisk_menu" sequence="200"
+            name="Settings"/>
+
+
 </odoo>

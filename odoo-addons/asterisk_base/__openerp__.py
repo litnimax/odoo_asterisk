@@ -15,6 +15,7 @@
         'views/templates.xml',
         'views/conf.xml',
         'views/server.xml',
+        'views/settings.xml',
         # Data files
         'data/server.xml',
         'data/features_conf.xml',

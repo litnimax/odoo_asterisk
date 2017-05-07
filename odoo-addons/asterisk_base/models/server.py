@@ -55,16 +55,24 @@ class AsteriskServer(models.Model):
     sync_uid = fields.Many2one('res.users', readonly=True, string='Sync by')
 
 
+    def no_asterisk_mode(self):
+        # Check Asterisk fake mode
+        return self.env['ir.config_parameter'].get_param(
+            'asterisk_base.no_asterisk', False)
+
+
     def asterisk_command(self, command):
-        for rec in self:
-            ajam = Pyajam(server=rec.host,
-                        username=rec.ami_username,
-                        password=rec.ami_password,
-                        port=rec.http_port)
-            if not ajam.login():
-                raise UserError('Asterisk AMI login error!')
-            response = ajam.command(command)
-            print 'Asterisk command: {}'.format(response)
+        self.ensure_one()
+        if self.no_asterisk_mode():
+            return
+        ajam = Pyajam(server=self.host,
+                    username=self.ami_username,
+                    password=self.ami_password,
+                    port=self.http_port)
+        if not ajam.login():
+            raise UserError('Asterisk AMI login error!')
+        response = ajam.command(command)
+
 
 
     def asterisk_reload(self):
@@ -74,6 +82,9 @@ class AsteriskServer(models.Model):
 
     def sync_conf(self):
         self.ensure_one()
+        if self.no_asterisk_mode():
+            return
+        # Start AJAM session
         s = requests.session()
         try:
             url = 'http://{}:{}/asterisk/mxml?action=Login&' \
@@ -103,7 +114,6 @@ class AsteriskServer(models.Model):
 
         # Start sending config files to the server
         for conf in self.conf_files:
-            print 'Send {}'.format(conf.filename)
             url = 'http://{}:{}/asterisk/uploads'.format(
                                                     self.host, self.http_port)
             response = s.post(url,
