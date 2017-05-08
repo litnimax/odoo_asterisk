@@ -7,6 +7,7 @@
       <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/codemirror/lib/codemirror.css"/>
       <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/codemirror/theme/blackboard.css"/>
       <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/codemirror/addon/scroll/simplescrollbars.css"/>
+      <link rel="stylesheet" type="text/css" href="/asterisk_base/static/lib/xterm/dist/xterm.css" />
       <style>
         .CodeMirror {
           border: 1px solid #eee;
@@ -14,6 +15,7 @@
         }
       </style>
       <script type="text/javascript" src="/asterisk_base/static/src/js/asterisk_conf.js"/>
+      <script type="text/javascript" src="/asterisk_base/static/src/js/server_cli.js"/>
     </xpath>
   </template>
 

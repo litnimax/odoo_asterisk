@@ -53,6 +53,26 @@ class AsteriskServer(models.Model):
                                  inverse_name='server')
     sync_date = fields.Datetime(readonly=True)
     sync_uid = fields.Many2one('res.users', readonly=True, string='Sync by')
+    cli_url = fields.Char(string='Asterisk CLI URL',
+                          default='ws://localhost:8010/websocket')
+    cli_area = fields.Text(compute='_get_cli_area', inverse='_set_cli_area')
+
+
+    @api.multi
+    def _get_cli_area(self):
+        """
+        We use cli_url to set CLI URL and reflect this in cli_area to take it from JS.
+        """
+        for rec in self:
+            rec.cli_area = rec.cli_url
+
+
+    @api.multi
+    def _set_cli_area(self):
+        """
+        STUB as I don't know yet how to extend WEB widgets and get rid of this shit.
+        """
+        pass
 
 
     def no_asterisk_mode(self):

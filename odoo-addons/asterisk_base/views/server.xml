@@ -21,6 +21,11 @@
       </field>
   </record>
 
+  <record id="server_cli_action" model="ir.actions.client">
+      <field name="name">server cli action</field>
+      <field name="tag">server_cli</field>
+  </record>
+
   <record model="ir.ui.view" id="asterisk_server_form">
       <field name="name">asterisk server form</field>
       <field name="model">asterisk.server</field>
@@ -38,6 +43,7 @@
                         <field name='name'/>
                         <field name='host'/>
                         <field name='note'/>
+                        <field name="cli_url" widget='url'/>
                       </group>
                       <group>
                         <field name='ami_username'/>
@@ -72,6 +78,9 @@
                                     'default_server_on_create': active_id}}"/>
                     </group>
                   </page>
+                    <page string="Console">
+                      <field name="cli_area" widget="server_cli"/>
+                    </page>
                 </notebook>
               </sheet>
           </form>

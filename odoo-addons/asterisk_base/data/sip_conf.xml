@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data noupdate="1">
+    <record id="asterisk_sip_conf" model="asterisk.conf">
+      <field name="filename">sip.conf</field>
+      <field name="server" ref="asterisk_test_server"/>
+      <field name="filename_on_create">http.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
+      <field name="content">; Hello there!
+[general]
+
+[default]
+
+[test1] ;Use it for testing account 1!
+secret=test1
+type=friend
+host=dynamic
+context=test
+
+[test2] ;Use it for testing account 2!
+secret=test2
+type=friend
+host=dynamic
+context=test
+
+      </field>
+    </record>
+  </data>
+</odoo>

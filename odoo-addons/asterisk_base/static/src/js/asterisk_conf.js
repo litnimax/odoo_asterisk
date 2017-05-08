@@ -1,8 +1,3 @@
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 odoo.define('asterisk_base.form_widgets', function (require) {
   "use strict";
 

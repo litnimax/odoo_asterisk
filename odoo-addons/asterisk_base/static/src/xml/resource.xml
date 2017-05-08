@@ -9,8 +9,12 @@
 
   <t t-name="AsteriskConf">
     <textarea id="asterisk_conf" class="asterisk_conf"></textarea>
-
   </t>
 
+  <t t-name="ServerCli">
+    <div class="container">
+        <div id="terminal-container"></div>
+    </div>
+  </t>
 
 </templates>

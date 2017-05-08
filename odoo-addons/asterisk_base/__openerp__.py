@@ -21,6 +21,7 @@
         'data/features_conf.xml',
         'data/http_conf.xml',
         'data/manager_conf.xml',
+        'data/sip_conf.xml',
     ],
     'demo': [
     ],
