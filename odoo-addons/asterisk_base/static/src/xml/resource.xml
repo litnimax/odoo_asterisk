@@ -13,7 +13,7 @@
 
   <t t-name="ServerCli">
     <div class="container">
-        <div id="terminal-container"></div>
+        <div class="terminal-container" id="terminal-container"></div>
     </div>
   </t>
 

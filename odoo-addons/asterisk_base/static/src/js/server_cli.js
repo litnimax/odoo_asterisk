@@ -24,13 +24,14 @@ odoo.define('asterisk.server_cli', function(require) {
       initialize_content: function() {
         console.log('init');
         var self = this;
-
+        var value = this.get('value');
+        if (!value || !$('.terminal-container').is(':visible')) return
         if (!this.myTerminal && !this.get('effective_readonly')) {
           console.log('new term');
           this.myTerminal = new Terminal();
           var protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
           //socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + "/websocket";
-          var socketURL = this.get('value');
+          var socketURL = value;
           var sock = new WebSocket(socketURL);
           sock.addEventListener('open', function () {
             self.myTerminal.terminadoAttach(sock);
