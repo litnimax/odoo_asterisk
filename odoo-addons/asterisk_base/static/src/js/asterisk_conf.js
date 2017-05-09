@@ -34,14 +34,14 @@ odoo.define('asterisk_base.form_widgets', function (require) {
       var self = this;
       //console.log('init', this.myCodeMirror);
       if (!this.myCodeMirror) {
-        console.log('CodeMirror not found, calling fromTextArea');
+        console.log('CodeMirror not found, creating.');
         this.myCodeMirror = CodeMirror(function(elt) {
           self.$el[0].parentNode.replaceChild(elt, self.$el[0]);
           },
           {
             'readOnly': 'nocursor',
             'mode': 'asterisk',
-            'autofocus': true,
+            'autofocus': false,
             'autoRefresh': true,
             //'viewportMargin': Infinity,
             'theme': 'blackboard',
