@@ -2,6 +2,12 @@
 
 ## Installation
 
+### Dependencies for Asterisk
+```
+apt install odbc-postgresql unixodbc
+```
+Copy  deploy/roles/asterisk/templates/odbc.ini into /etc/
+
 ### Dependencies for Odoo
 * humanize
 * pyajam
