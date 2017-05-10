@@ -67,10 +67,6 @@
                                 <field name="recording_widget" widget="html" nolabel="1"
                                     attrs="{'invisible': [('recording_filename', '=', False)]}"/>
                             </group>
-                            <group>
-                            <field name="recording_download" widget="html" nolabel="1"
-                                attrs="{'invisible': [('recording_filename', '=', False)]}"/>
-                            </group>
                         </group>
                         <group string="QoS">
                             <group>

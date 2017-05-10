@@ -6,7 +6,7 @@ from openerp import sql_db
 import requests
 from urlparse import urljoin
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 ASTERISK_ROLE = 'asterisk' # This PostgreSQL role is used to grant access to CDR table
 
@@ -23,6 +23,7 @@ class Cdr(models.Model):
     _name = 'asterisk.cdr'
     _description = 'Call Detail Record'
     _order = 'started desc'
+    _rec_name = 'uniqueid'
 
     accountcode = fields.Char(size=20, string='Account code', index=True)
     src = fields.Char(size=80, string='Src', index=True)
@@ -46,8 +47,8 @@ class Cdr(models.Model):
     linkedid = fields.Char(size=150, string='Linked id')
     sequence = fields.Integer(string='Sequence')
     recording_filename = fields.Char()
+    recording_data = fields.Binary()
     recording_widget = fields.Char(compute='_get_recording_widget')
-    recording_download = fields.Char(compute='_get_recording_download')
     # QoS
     ssrc = fields.Char(string='Our SSRC')
     themssrc = fields.Char(string='Other SSRC')
@@ -76,20 +77,14 @@ class Cdr(models.Model):
         for rec in self:
             rec.recording_widget = '<audio id="sound_file" preload="auto" ' \
                     'controls="controls"> ' \
-                    '<source src="/recording/{}" type="audio/wav"/>'.format(
-                                                        rec.recording_filename)
-
-
-    @api.multi
-    def _get_recording_download(self):
-        for rec in self:
-            rec.recording_download = '<a href="/recording/{}">Download</a>'.format(
-                rec.recording_filename)
+                    '<source src="/web/content?model=asterisk.cdr&' \
+                    'id={}&filename={}.wav&field=recording_data" ' \
+                    'type="audio/wav"/>'.format(rec.id, rec.recording_filename)
 
 
     @api.model
     def log_qos(self, values):
-        logger.debug(values)
+        _logger.debug(values)
         uniqueid = values.get('uniqueid')
         linkedid = values.get('linkedid')
         cdrs = self.env['asterisk.cdr'].search([
@@ -100,10 +95,10 @@ class Cdr(models.Model):
             ),
         ])
         if not cdrs:
-            logger.warning('Omitting QoS, CDR not found!')
+            _logger.warning('Omitting QoS, CDR not found!')
             return False
         else:
-            logger.debug('Found CDR for QoS.')
+            _logger.debug('Found CDR for QoS.')
             cdr = cdrs[0]
             cdr.ssrc =values.get('ssrc')
             cdr.themssrc = values.get('themssrc')
@@ -114,4 +109,19 @@ class Cdr(models.Model):
             cdr.rxcount = int(values.get('rxcount'))
             cdr.txcount = int(values.get('txcount'))
             cdr.rtt = float(values.get('rtt'))
+            return True
+
+
+    @api.model
+    def save_call_recording(self, call_id, file_data):
+        _logger.debug('save_call_recording for callid {}.'.format(call_id))
+        rec = self.env['asterisk.cdr'].search([('uniqueid', '=', call_id),])
+        if not rec:
+            _logger.warning(
+                'save_call_recording - cdr not found by id {}.'.format(call_id))
+            return False
+        else:
+            _logger.debug('Found CDR for id {}.'.format(call_id))
+            rec.recording_filename = '{}.wav'.format(call_id)
+            rec.recording_data = file_data
             return True

@@ -7,8 +7,7 @@
       <field name="server" ref="asterisk_test_server"/>
       <field name="filename_on_create">cdr_adaptive_odbc.conf</field>
       <field name="server_on_create" ref="asterisk_test_server"/>
-      <field name="content">; Hello there!
-[cdr_odoo_odbc]
+      <field name="content">[cdr_odoo_odbc]
 connection=odoo_odbc
 table=asterisk_cdr
 usegmtime=yes

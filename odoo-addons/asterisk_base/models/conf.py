@@ -8,6 +8,7 @@ class AsteriskConf(models.Model):
     _name = 'asterisk.conf'
     _description = 'Configuration Files'
     _rec_name = 'filename'
+    _order = 'filename'
 
     filename = fields.Char(required=True)
     server = fields.Many2one(comodel_name='asterisk.server',
@@ -20,7 +21,8 @@ class AsteriskConf(models.Model):
 
 
     _sql_constraints = [
-        ('filename', 'unique(filename)', _('This file already exists.'))
+        ('filename_server_idx', 'unique(filename,server)',
+            _('This file already exists on this server.')),
     ]
 
 

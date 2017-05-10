@@ -1,1 +1,7 @@
+gevent
+odoorpc
+py-Asterisk
+requests
+setproctitle
 terminado
+

@@ -7,8 +7,7 @@
       <field name="server" ref="asterisk_test_server"/>
       <field name="filename_on_create">sip.conf</field>
       <field name="server_on_create" ref="asterisk_test_server"/>
-      <field name="content">; Hello there!
-[general]
+      <field name="content">[general]
 
 [default]
 

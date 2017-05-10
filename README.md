@@ -2,16 +2,8 @@
 
 ## Installation
 
-### Dependencies for Asterisk
-```
-apt install odbc-postgresql unixodbc
-```
-Copy  deploy/roles/asterisk/templates/odbc.ini into /etc/
-
 ### Dependencies for Odoo
-* humanize
-* pyajam
-
+#### Install Humanize
 ```sh
 pip install humanize
 ```
@@ -20,7 +12,7 @@ or if you system wide odoo installation:
 apt-get install python-humanize
 ```
 
-Install PyAjam
+#### Install PyAjam
 ```
 pip install git+https://github.com/litnimax/PyAjam.git
 ```
@@ -49,7 +41,7 @@ Watch all these steps in this 1 minute video tutorial:
 Before installing Odoo Asterisk Application you have to create PostgreSQL role for Asterisk:
 
 ```sql
-template1=# create user asterisk with password 'change_me';
+template1=# create user asterisk with password 'asterisk';
 CREATE ROLE
 template1=#
 
