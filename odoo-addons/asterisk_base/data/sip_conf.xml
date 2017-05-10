@@ -5,7 +5,7 @@
     <record id="asterisk_sip_conf" model="asterisk.conf">
       <field name="filename">sip.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="filename_on_create">http.conf</field>
+      <field name="filename_on_create">sip.conf</field>
       <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">; Hello there!
 [general]

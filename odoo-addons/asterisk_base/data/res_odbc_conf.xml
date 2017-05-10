@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data noupdate="1">
+    <record id="asterisk_res_odbc_conf" model="asterisk.conf">
+      <field name="filename">res_odbc.conf</field>
+      <field name="server" ref="asterisk_test_server"/>
+      <field name="filename_on_create">res_odbc.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
+      <field name="content">; Hello there!
+[odoo_odbc]
+enabled => yes
+dsn => odoo_dsn
+username => odoo
+password => odoo
+share_connections => yes
+sanitysql => select 1
+pre-connect => yes
+      </field>
+    </record>
+  </data>
+</odoo>
