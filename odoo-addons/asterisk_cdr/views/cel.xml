@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='asterisk_cel_action' model='ir.actions.act_window'>
+            <field name='name'>Asterisk Channel Event Logging</field>
+            <field name='res_model'>asterisk.cel</field>
+             <field name="view_mode">tree,form,graph</field>
+        </record>
+
+        <menuitem id="asterisk_cel_menu" parent='asterisk_base.asterisk_reports_menu'
+            name='Call Events'
+            action='asterisk_cel_action' sequence='200'/>
+
+        <record id='asterisk_cel_list' model='ir.ui.view'>
+            <field name='name'>asterisk.cel.list</field>
+            <field name='model'>asterisk.cel</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string='CEL'>
+                    <field name='eventtype'/>
+                    <field name='eventtime'/>
+                    <field name='exten'/>
+                    <field name='channame'/>
+                    <field name='appname'/>
+                    <field name='appdata'/>
+                    <field name='uniqueid'/>
+                    <field name='linkedid'/>
+                    <field name='cid_num'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='asterisk_cel_form' model='ir.ui.view'>
+            <field name='name'>asterisk.cel.form</field>
+            <field name='model'>asterisk.cel</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <form string='CEL' edit="false" create="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name='eventtype'/>
+                                <field name='eventtime'/>
+                                 <field name='context'/>
+                                <field name='exten'/>
+                                <field name='channame'/>
+                                <field name='peer'/>
+                                <field name='appname'/>
+                                <field name='appdata'/>
+                                <field name='uniqueid'/>
+                                <field name='linkedid'/>
+                                <field name='cid_num'/>
+                                <field name='cid_name'/>
+                                <field name='cid_dnid'/>
+                                <field name='cid_rdnis'/>
+                                <field name='cid_ani'/>
+                                <field name='userfield'/>
+                                <field name='accountcode'/>
+                                <field name='peeraccount'/>
+                                <field name='amaflags'/>
+                                <field name='userdeftype'/>
+                                <field name='cdr' options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id='asterisk_cel_search' model='ir.ui.view'>
+            <field name='name'>asterisk.cel.search</field>
+            <field name='model'>asterisk.cel</field>
+            <field name='type'>search</field>
+            <field name='arch' type='xml'>
+                <search string="CEL Request">
+                    <field name="appname"/>
+                    <field name="peer"/>
+                    <field name="cid_num"/>
+                    <field name="channame"/>
+                    <field name="context"/>
+                    <field name="uniqueid"/>
+                    <field name="userfield"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="asterisk_cel_graph" model="ir.ui.view">
+            <field name="name">asterisk.cel.graph</field>
+            <field name="model">asterisk.cel</field>
+
+            <field name="arch" type="xml">
+                <graph orientation="horizontal" string="Calls" type="pivot" stacked="True">
+                    <field name="accountcode" type="row"/>
+                    <field name="eventtype" type="col"/>
+                </graph>
+            </field>
+        </record>
+
+        <function name="grant_asterisk_access" model="asterisk.cel"/>
+
+    </data>
+</odoo>

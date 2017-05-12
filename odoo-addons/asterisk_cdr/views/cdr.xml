@@ -1,4 +1,5 @@
-<openerp>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
     <data>
 
         <record id='asterisk_cdr_action' model='ir.actions.act_window'>
@@ -7,9 +8,9 @@
             <field name="view_mode">tree,form,graph</field>
         </record>
 
-        <menuitem id="asterisk_cdr_menu" parent='asterisk_base.asterisk_reports_menu' name='Call Details'
-             action='asterisk_cdr_action' sequence='100'/>
-
+        <menuitem id="asterisk_cdr_menu" parent='asterisk_base.asterisk_reports_menu'
+            name='Call Details'
+            action='asterisk_cdr_action' sequence='100'/>
 
         <record id='asterisk_cdr_list' model='ir.ui.view'>
             <field name='name'>asterisk.cdr.list</field>
@@ -34,7 +35,16 @@
             <field name='type'>form</field>
             <field name='arch' type='xml'>
                 <form edit='false' create="false" string='cdr'>
-                    <sheet>
+                  <sheet>
+                    <div class="oe_button_box oe_right" >
+                      <button name="%(asterisk_cel_action)d" type="action"
+                              domain="[('cdr', '=', active_id)]"
+                              context="{'search_default_uniqueid': uniqueid}"
+                              class="oe_stat_button"  icon="fa-bars">
+                          <field name="cel_count"
+                                 string="Call Events" widget="statinfo"/>
+                      </button>
+                    </div>
                         <group>
                             <group colspan='1'>
                                 <field name='started' readonly='1'/>
@@ -126,4 +136,4 @@
         <function name="grant_asterisk_access" model="asterisk.cdr"/>
 
     </data>
-</openerp>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="asterisk_extensions_conf" model="asterisk.conf">
+      <field name="filename">extensions.conf</field>
+      <field name="server" ref="asterisk_test_server"/>
+      <field name="filename_on_create">extensions.conf</field>
+      <field name="server_on_create" ref="asterisk_test_server"/>
+      <field name="content">[general]
+
+#include extensions_custom.conf
+
+[default]
+
+;[clean-recording]
+;exten => s,1,System(sleep 5 &amp;&amp; rm "/var/spool/asterisk/monitor/${UNIQUEID}.wav")
+
+[macro-monitor]
+exten => s,1,MixMonitor(${UNIQUEID}.wav)
+   ;same => n,Set(CHANNEL(hangup_handler_push)=clean-recording,s,1(${UNIQUEID}))
+   same => n,Set(AUDIOHOOK_INHERIT(MixMonitor)=yes)
+
+[stasis-error]
+; Here we come on stasis errors
+exten => stasis-error,1,Answer
+exten => stasis-error,n,Playback(error-has-occured)
+exten => stasis-error,n,Hangup
+
+
+[test]
+include => stasis-error
+exten => _X.,1,Answer
+exten => _X.,n,Stasis(odoo,set_callerid)
+exten => _X.,n,Macro(monitor)
+exten => _X.,n,Playback(demo-thanks)
+exten => _X.,n,Hangup
+
+      </field>
+    </record>
+  </data>
+</odoo>

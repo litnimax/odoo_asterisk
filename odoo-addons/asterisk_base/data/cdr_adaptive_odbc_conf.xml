@@ -11,6 +11,9 @@
 connection=odoo_odbc
 table=asterisk_cdr
 usegmtime=yes
+alias start => started
+alias end => ended
+alias answer => answered
       </field>
     </record>
   </data>

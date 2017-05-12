@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 import humanize
 import logging
-from openerp import models, fields, api, _
-from openerp import sql_db
+from odoo import models, fields, api, _
+from odoo import sql_db
 import requests
 from urlparse import urljoin
 
@@ -59,6 +59,45 @@ class Cdr(models.Model):
     rxcount = fields.Integer(string='RX Count')
     txcount = fields.Integer(string='TX Count')
     rtt = fields.Float(string='Round Trip Time')
+    # CEL related fields
+    cel_count = fields.Integer(compute='_get_cel_count')
+    cels = fields.One2many(comodel_name='asterisk.cel',
+                           inverse_name='cdr')
+
+
+    def __init__(self, pool, cr):
+        init_res = super(Cdr, self).__init__(pool, cr)
+        cr.execute("""CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
+            BEGIN
+            UPDATE asterisk_cel set cdr = NEW.id
+                WHERE asterisk_cel.uniqueid = NEW.uniqueid;
+            RETURN NULL;
+            END; $$ LANGUAGE 'plpgsql';
+
+            DROP TRIGGER IF EXISTS update_cel_cdr_field  on asterisk_cdr;
+            CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
+                FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
+            """)
+        return init_res
+
+
+    """
+    LOL :-) Asterisk does not use Odoo to store CDRs :-))
+    def create(self, vals):
+        res = super(Cdr, self).create(vals)
+        found = self.env['asterisk.cel'].search([('uniqueid', '=', res.uniqueid)])
+        if found:
+            _logger.debug('Updating {} CELs for {}'.format(
+                len(found), res.uniqueid))
+            found.write({'cdr': res.id})
+    """
+
+
+    @api.multi
+    def _get_cel_count(self):
+        for rec in self:
+            rec.cel_count = self.env['asterisk.cel'].search_count([
+                ('cdr', '=', rec.id)])
 
 
     @api.model

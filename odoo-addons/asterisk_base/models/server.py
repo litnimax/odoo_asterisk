@@ -88,7 +88,8 @@ class AsteriskServer(models.Model):
         ajam = Pyajam(server=self.host,
                     username=self.ami_username,
                     password=self.ami_password,
-                    port=self.http_port)
+                    port=self.http_port,
+                    path='') # Do not set prefix
         if not ajam.login():
             raise UserError('Asterisk AMI login error!')
         response = ajam.command(command)
@@ -107,7 +108,7 @@ class AsteriskServer(models.Model):
         # Start AJAM session
         s = requests.session()
         try:
-            url = 'http://{}:{}/asterisk/mxml?action=Login&' \
+            url = 'http://{}:{}/mxml?action=Login&' \
                   'username={}&secret={}'.format(
                         self.host, self.http_port,
                         self.ami_username, self.ami_password)
@@ -134,7 +135,7 @@ class AsteriskServer(models.Model):
 
         # Start sending config files to the server
         for conf in self.conf_files:
-            url = 'http://{}:{}/asterisk/uploads'.format(
+            url = 'http://{}:{}/uploads'.format(
                                                     self.host, self.http_port)
             response = s.post(url,
                 files={'file': (conf.filename, conf.content, 'text/plain', {'Content-type': 'text/plain'})})

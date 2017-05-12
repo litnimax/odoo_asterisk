@@ -1,5 +1,7 @@
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
+from odoo import sql_db
 
+ASTERISK_ROLE = 'asterisk' # This PostgreSQL role is used to grant access to CEL table
 
 CEL_TYPES = (
     ('CHAN_START', _('The time a channel was created')),
@@ -32,6 +34,7 @@ CEL_TYPES = (
 class Cel(models.Model):
     _name = 'asterisk.cel'
     _description = 'Asterisk CEL'
+    _rec_name = 'eventtype'
 
     eventtype = fields.Char(size=30, string='Event type',
         help='The name of the event',index=True)
@@ -45,7 +48,7 @@ class Cel(models.Model):
     exten = fields.Char(size=80, string='Extension',
         help='The extension in the dialplan', index=True)
     context = fields.Char(size=80, string='Context')
-    channame = fields.Char(size=80, string='Channel',
+    channame = fields.Char(size=80, string='Channel', index=True,
         help='The name assigned to the channel in which the event took place')
     appname = fields.Char(size=80, string='Application')
     appdata = fields.Char(size=80, string='Application data')
@@ -56,3 +59,15 @@ class Cel(models.Model):
     linkedid = fields.Char(size=150, string='Linked ID', index=True)
     userfield = fields.Char(size=255, string='User field', index=True)
     peer = fields.Char(size=80, string='Other channel', index=True)
+    cdr = fields.Many2one('asterisk.cdr', ondelete='cascade')
+
+
+    @api.model
+    def grant_asterisk_access(self):
+        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
+        sql = "GRANT ALL on asterisk_cel to %s" % ASTERISK_ROLE
+        cr.execute(sql)
+        sql = "GRANT ALL on asterisk_cel_id_seq to %s" % ASTERISK_ROLE
+        cr.execute(sql)
+        cr.commit()
+        cr.close()

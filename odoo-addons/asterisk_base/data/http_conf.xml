@@ -13,7 +13,7 @@ enablestatic=yes
 servername=Asterisk
 bindaddr=0.0.0.0
 bindport=8088
-prefix=asterisk ;Do not change the prefix!
+prefix=; Do not change the prefix as ARI connect does not support it.
 
 ; Do not remove! Config files are uploaded over here.
 [post_mappings]

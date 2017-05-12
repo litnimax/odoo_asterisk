@@ -25,6 +25,8 @@
         'data/sip_conf.xml',
         'data/res_odbc_conf.xml',
         'data/cdr_adaptive_odbc_conf.xml',
+        'data/cel_conf.xml',
+        'data/cel_pgsql_conf.xml',
     ],
     'demo': [
     ],
