@@ -24,26 +24,25 @@ odoo.define('asterisk.server_cli', function(require) {
 
       renderElement: function() {
         this._super();
-        this.$el.append('<div class="terminal-container"/>');
-        var self = this;
-        self.term = new Terminal({
-          cols: 80,
+        this.$el.append('<div id="terminal-container" class="terminal-container"></div>');
+        this.term = new Terminal({
+          cols: 100,
           rows: 24
         });
-
-        console.log('term created.')
-        self.term.open(self.$('.terminal-container')[0], focus=true);
       },
 
-
       start: function() {
-        console.log('start');
         var socketURL = this.get('value');
         var sock = new WebSocket(socketURL);
         var self = this;
         sock.addEventListener('open', function () {
           self.term.terminadoAttach(sock);
         });
+        // Now it need some time to load correctly.
+        setTimeout(function() {
+          self.term.open(document.getElementById('terminal-container'), focus=true);
+          self.set_dimensions('100%', '100%');
+        }, 3000);
 
       },
 
