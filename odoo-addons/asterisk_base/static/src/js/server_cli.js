@@ -4,9 +4,10 @@ odoo.define('asterisk.server_cli', function(require) {
     var core = require('web.core');
     var common = require('web.form_common');
     var ajax = require('web.ajax');
+    var dom_utils = require('web.dom_utils');
+    var Widget = require('web.Widget');
 
-    var ServerCli = common.AbstractField.extend(common.ReinitializeFieldMixin, {
-      template: 'ServerCli',
+    var ServerCli = common.AbstractField.extend({
 
       willStart: function() {
         console.log('ajax');
@@ -21,36 +22,33 @@ odoo.define('asterisk.server_cli', function(require) {
         return $.when(this._super(), this.loadJS_def);
       },
 
-      initialize_content: function() {
-        console.log('init');
+      renderElement: function() {
+        this._super();
+        this.$el.append('<div class="terminal-container"/>');
         var self = this;
-        var value = this.get('value');
-        if (!value || !$('.terminal-container').is(':visible')) return
-        if (!this.myTerminal && !this.get('effective_readonly')) {
-          console.log('new term');
-          this.myTerminal = new Terminal();
-          var protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
-          //socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + "/websocket";
-          var socketURL = value;
-          var sock = new WebSocket(socketURL);
-          sock.addEventListener('open', function () {
-            self.myTerminal.terminadoAttach(sock);
-          });
-          this.myTerminal.open(document.getElementById('terminal-container'), focus=true);
-          this.$el.css({
-            width: '100%',
-            minHeight: '100%',
-          });
-          console.log('init complete', this.myTerminal);
-        }
+        self.term = new Terminal({
+          cols: 80,
+          rows: 24
+        });
+
+        console.log('term created.')
+        self.term.open(self.$('.terminal-container')[0], focus=true);
       },
 
-      destroy_content: function() {
-        console.log('destroy');
-        delete this.myTerminal;
+
+      start: function() {
+        console.log('start');
+        var socketURL = this.get('value');
+        var sock = new WebSocket(socketURL);
+        var self = this;
+        sock.addEventListener('open', function () {
+          self.term.terminadoAttach(sock);
+        });
+
       },
 
     });
+
     core.form_widget_registry.add('server_cli', ServerCli);
 
   });
