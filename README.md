@@ -55,8 +55,8 @@ ws://192.168.1.1:8010/websocket
 
 ### services
 This folder contains additional helper applications:
-* stasis_apps.py - Asterisk Stasis Application implementing different services, e.g. setting callerid name from Odoo contacts.
-* ami_broker.py - AMI client for asterisk used for example to catch Hangup event to download call recording.
+* **stasis_apps.py** - Asterisk Stasis Application implementing different services, e.g. setting callerid name from Odoo contacts.
+* **ami_broker.py** - AMI client for asterisk used for example to catch Hangup event to download call recording.
 
 You should create a virtualenvironment using this folder's requirements.txt and run both scripts.
 See conf.py for configuration settings
