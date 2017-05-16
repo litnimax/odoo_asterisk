@@ -2,7 +2,5 @@ gevent
 ari
 odoorpc
 py-Asterisk
-git+https://github.com/litnimax/PyAjam.git
 requests
 setproctitle
-terminado
