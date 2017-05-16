@@ -14,6 +14,8 @@
           height: auto;
         }
       </style>
+      <script type="text/javascript" src="/asterisk_base/static/lib/xterm/dist/xterm.js"/>
+      <script type="javascript" src="/asterisk_base/static/lib/xterm/dist/addons/terminado/terminado.js"/>  
       <script type="text/javascript" src="/asterisk_base/static/src/js/asterisk_conf.js"/>
       <script type="text/javascript" src="/asterisk_base/static/src/js/server_cli.js"/>
     </xpath>
