@@ -15,7 +15,7 @@
       <field name="model">asterisk.server</field>
       <field name="arch" type="xml">
           <tree>
-              <button name="sync_conf" type="object"
+              <button name="sync_all_conf" type="object"
                 icon="fa-paper-plane" class="oe_highlight"/>
               <field name="name"/>
               <field name="host"/>
