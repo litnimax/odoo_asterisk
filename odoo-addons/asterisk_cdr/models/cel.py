@@ -4,7 +4,7 @@ from odoo import sql_db
 ASTERISK_ROLE = 'asterisk' # This PostgreSQL role is used to grant access to CEL table
 
 CEL_TYPES = (
-    ('CHAN_START', _('The time a channel was created')),
+    ('CHAN_START', _('Channel started')),
     ('CHAN_END', _('The time a channel was terminated')),
     ('ANSWER', _('The time a channel was answered (ie, phone taken off-hook)')),
     ('HANGUP', _('The time at which a hangup occurred')),
@@ -36,7 +36,8 @@ class Cel(models.Model):
     _description = 'Asterisk CEL'
     _rec_name = 'eventtype'
 
-    eventtype = fields.Char(size=30, string='Event type',
+    eventtype = fields.Selection(size=30, string='Event type',
+        selection=CEL_TYPES,
         help='The name of the event',index=True)
     eventtime = fields.Datetime(string='Event time', index=True)
     userdeftype = fields.Char(size=255, string='User event type', index=True)
@@ -60,6 +61,21 @@ class Cel(models.Model):
     userfield = fields.Char(size=255, string='User field', index=True)
     peer = fields.Char(size=80, string='Other channel', index=True)
     cdr = fields.Many2one('asterisk.cdr', ondelete='cascade')
+
+    def __init__(self, pool, cr):
+        init_res = super(Cel, self).__init__(pool, cr)
+        cr.execute("""CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
+            BEGIN
+            UPDATE asterisk_cel set cdr = NEW.id
+                WHERE asterisk_cel.uniqueid = NEW.uniqueid;
+            RETURN NULL;
+            END; $$ LANGUAGE 'plpgsql';
+
+            DROP TRIGGER IF EXISTS update_cel_cdr_field  on asterisk_cdr;
+            CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
+                FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
+            """)
+        return init_res
 
 
     @api.model

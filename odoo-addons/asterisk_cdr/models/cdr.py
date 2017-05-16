@@ -65,34 +65,6 @@ class Cdr(models.Model):
                            inverse_name='cdr')
 
 
-    def __init__(self, pool, cr):
-        init_res = super(Cdr, self).__init__(pool, cr)
-        cr.execute("""CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
-            BEGIN
-            UPDATE asterisk_cel set cdr = NEW.id
-                WHERE asterisk_cel.uniqueid = NEW.uniqueid;
-            RETURN NULL;
-            END; $$ LANGUAGE 'plpgsql';
-
-            DROP TRIGGER IF EXISTS update_cel_cdr_field  on asterisk_cdr;
-            CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
-                FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
-            """)
-        return init_res
-
-
-    """
-    LOL :-) Asterisk does not use Odoo to store CDRs :-))
-    def create(self, vals):
-        res = super(Cdr, self).create(vals)
-        found = self.env['asterisk.cel'].search([('uniqueid', '=', res.uniqueid)])
-        if found:
-            _logger.debug('Updating {} CELs for {}'.format(
-                len(found), res.uniqueid))
-            found.write({'cdr': res.id})
-    """
-
-
     @api.multi
     def _get_cel_count(self):
         for rec in self:
