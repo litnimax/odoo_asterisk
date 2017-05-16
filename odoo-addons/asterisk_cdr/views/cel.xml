@@ -20,12 +20,21 @@
                     <field name='eventtype'/>
                     <field name='eventtime'/>
                     <field name='exten'/>
+                    <field name='context'/>
                     <field name='channame'/>
                     <field name='appname'/>
                     <field name='appdata'/>
+                    <field name='accountcode'/>
+                    <field name='peer'/>
+                    <field name='peeraccount'/>
+                    <field name='exten'/>
                     <field name='uniqueid'/>
                     <field name='linkedid'/>
                     <field name='cid_num'/>
+                    <field name='cid_name'/>
+                    <field name='cid_ani'/>
+                    <field name='cid_rdnis'/>
+                    <field name='cid_dnid'/>
                 </tree>
             </field>
         </record>

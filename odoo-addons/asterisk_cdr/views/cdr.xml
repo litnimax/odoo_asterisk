@@ -125,9 +125,10 @@
                     <filter string="No answer" domain="[('disposition','=','NO ANSWER')]"/>
                     <filter string="Failed" domain="[('disposition','=','FAILED')]"/>
                     <filter string="Congestion" domain="[('disposition','=','CONGESTION')]"/>
-                    <filter string="Src" icon='fa-phone'  domain="[]" context="{'group_by':'src'}"/>
-                    <filter string="Dst" icon='STOCK_ADD' domain="[]" context="{'group_by':'dst'}"/>
-                    <filter string="Start" domain="[]" context="{'group_by':'start'}"/>
+
+                    <filter string="Src" domain="[]" context="{'group_by':'src'}"/>
+                    <filter string="Dst" domain="[]" context="{'group_by':'dst'}"/>
+                    <filter string="Started" domain="[]" context="{'group_by':'started'}"/>
                     <filter string="Disposition" domain="[]" context="{'group_by':'disposition'}"/>
                 </search>
             </field>
