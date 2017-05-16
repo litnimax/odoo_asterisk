@@ -38,3 +38,10 @@ class AsteriskConf(models.Model):
         else:
             self.filename_on_create = self.filename
             self.server_on_create = self.server
+
+
+    def sync_conf(self):
+        self.ensure_one()
+        session = self.server.get_ajam_session()
+        self.server.sync_conf(self, session)
+        self.server.asterisk_reload()

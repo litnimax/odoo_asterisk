@@ -9,6 +9,8 @@ from pyajam import Pyajam
 
 _logger = logging.getLogger(__name__)
 
+REQUEST_TIMEOUT = 6
+
 
 def etree_to_dict(t):
     """
@@ -101,10 +103,7 @@ class AsteriskServer(models.Model):
         self.asterisk_command('reload')
 
 
-    def sync_conf(self):
-        self.ensure_one()
-        if self.no_asterisk_mode():
-            return
+    def get_ajam_session(self):
         # Start AJAM session
         s = requests.session()
         try:
@@ -112,14 +111,13 @@ class AsteriskServer(models.Model):
                   'username={}&secret={}'.format(
                         self.host, self.http_port,
                         self.ami_username, self.ami_password)
-            resp = s.get(url)
+            resp = s.get(url, timeout=REQUEST_TIMEOUT)
         except requests.ConnectionError as e:
             raise UserError('Cannot connect to Asterisk server!')
         # Check status
         if resp.status_code != 200:
             raise UserError('Asterisk server response status {}'.format(
                                                             resp.status_code))
-
         # Convert response from XML to {}
         mxml_response = ET.XML(resp.text)
         dict_response = etree_to_dict(mxml_response)
@@ -133,15 +131,28 @@ class AsteriskServer(models.Model):
                 'generic', {}).get('@message')
             raise Warning('Error: {}!'.format(message))
 
+        # Return session
+        return s
+
+
+    def sync_conf(self, conf, session):
+        url = 'http://{}:{}/uploads'.format(self.host, self.http_port)
+        response = session.post(url,
+            files={'file': (conf.filename, conf.content, 'text/plain',
+                                        {'Content-type': 'text/plain'})})
+        if 'File successfully uploaded' not in response.text:
+            raise Warning('File upload error: {}.'.format(response.text))
+
+
+
+    def sync_all_conf(self):
+        self.ensure_one()
+        if self.no_asterisk_mode():
+            return
+        session = self.get_ajam_session()
         # Start sending config files to the server
         for conf in self.conf_files:
-            url = 'http://{}:{}/uploads'.format(
-                                                    self.host, self.http_port)
-            response = s.post(url,
-                files={'file': (conf.filename, conf.content, 'text/plain', {'Content-type': 'text/plain'})})
-            if 'File successfully uploaded' not in response.text:
-                raise Warning('File upload error: {}.'.format(response.text))
-
+            self.sync_conf(conf, session)
         # Update last sync
         self.sync_date = fields.Datetime.now()
         self.sync_uid = self.env.uid

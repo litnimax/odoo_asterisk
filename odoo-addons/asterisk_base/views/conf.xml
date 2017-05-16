@@ -26,6 +26,10 @@
       <field name="model">asterisk.conf</field>
       <field name="arch" type="xml">
           <form>
+            <header>
+                <button name="sync_conf" type="object" icon="fa-paper-plane"
+                    string="Sync File" class="oe_highlight"/>
+            </header>
               <sheet>
                 <notebook>
                   <page string="Content">

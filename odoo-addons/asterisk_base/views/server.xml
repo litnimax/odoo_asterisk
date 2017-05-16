@@ -34,7 +34,7 @@
       <field name="arch" type="xml">
           <form>
               <header>
-                  <button name="sync_conf" type="object" icon="fa-paper-plane"
+                  <button name="sync_all_conf" type="object" icon="fa-paper-plane"
                       string="Sync Configuration" class="oe_highlight"/>
               </header>
               <sheet>
