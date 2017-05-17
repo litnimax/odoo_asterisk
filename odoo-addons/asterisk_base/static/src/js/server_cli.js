@@ -23,7 +23,7 @@ odoo.define('asterisk.server_cli', function(require) {
         button.setAttribute('class', 'btn btn-info bt-lg');
         button.innerHTML = 'Launch Console';
         button.onclick = function() {
-          self.term.open(self.el, focus=false);
+          self.term.open(self.el, focus=true);
           self.set_dimensions('100%', '100%');
           button.onclick = undefined;
           self.el.removeChild(button);
