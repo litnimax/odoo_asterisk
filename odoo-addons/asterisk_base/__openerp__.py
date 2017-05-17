@@ -17,6 +17,7 @@
         'views/server.xml',
         'views/settings.xml',
         # Data files
+        'data/ari_conf.xml',
         'data/server.xml',
         'data/features_conf.xml',
         'data/http_conf.xml',
