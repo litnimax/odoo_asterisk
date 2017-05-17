@@ -5,7 +5,7 @@
         <field name="name">asterisk sip peer status list</field>
         <field name="model">asterisk.sip_peer_status</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <tree create="false" edit="false">
                 <field name="peer"/>
                 <field name="status"/>
                 <field name="cause"/>
@@ -16,12 +16,12 @@
     </record>
 
     <record model="ir.actions.act_window" id="asterisk_sip_peer_status_action">
-        <field name="name">SIP Statuses</field>
+        <field name="name">SIP Status</field>
         <field name="res_model">asterisk.sip_peer_status</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">tree,graph,pivot,calendar</field>
     </record>
 
-    <menuitem name="SIP Peer Status" id="asterisk_peers_status_menu"
+    <menuitem name="SIP Status" id="asterisk_peers_status_menu"
               parent="asterisk_base.asterisk_reports_menu" sequence="30"
               action="asterisk_sip_peer_status_action"/>
 
@@ -46,6 +46,34 @@
                         context="{'group_by': 'create_date'}"/>
             </search>
         </field>
+    </record>
+
+    <record id="sip_peer_status_graph" model="ir.ui.view">
+      <field name="name">asterisk.sip_peer_status.graph</field>
+      <field name="model">asterisk.sip_peer_status</field>
+      <field name="arch" type="xml">
+        <graph>
+          <field name="create_date" inerval="day"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="sip_peer_status_pivot" model="ir.ui.view">
+      <field name="name">asterisk.sip_peer_status.pivot</field>
+      <field name="model">asterisk.sip_peer_status</field>
+      <field name="arch" type="xml">
+        <pivot>
+          <field name="create_date" inerval="day"/>
+        </pivot>
+      </field>
+    </record>
+
+    <record id="sip_peer_status_cal" model="ir.ui.view">
+      <field name="name">asterisk.sip_peer_status.cal</field>
+      <field name="model">asterisk.sip_peer_status</field>
+      <field name="arch" type="xml">
+        <calendar date_start="create_date" event_open_popup="false" quick_add="false"/>
+      </field>
     </record>
 
     <record id="cron_delete_expired" model="ir.cron">

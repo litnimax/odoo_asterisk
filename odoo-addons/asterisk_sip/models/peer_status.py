@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 class SipPeerStatus(models.Model):
     _name = 'asterisk.sip_peer_status'
     _order = 'create_date desc'
+    _rec_name = 'status'
 
     peer = fields.Many2one(comodel_name='asterisk.sip_peer', required=True,
                            ondelete='cascade')

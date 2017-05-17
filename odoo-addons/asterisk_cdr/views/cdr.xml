@@ -2,10 +2,12 @@
 <odoo>
     <data>
 
+        <function name="grant_asterisk_access" model="asterisk.cdr"/>
+
         <record id='asterisk_cdr_action' model='ir.actions.act_window'>
             <field name='name'>Call Details</field>
             <field name='res_model'>asterisk.cdr</field>
-            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="view_mode">tree,form,graph,pivot,calendar</field>
         </record>
 
         <menuitem id="asterisk_cdr_menu" parent='asterisk_base.asterisk_reports_menu'
@@ -147,7 +149,13 @@
             </field>
         </record>
 
-        <function name="grant_asterisk_access" model="asterisk.cdr"/>
+        <record id="asterisk_cdr_cal" model="ir.ui.view">
+          <field name="name">asterisk.cdr.cal</field>
+          <field name="model">asterisk.cdr</field>
+          <field name="arch" type="xml">
+            <calendar date_start="create_date"/>
+          </field>
+        </record>
 
         <!-- Dashboard -->
         <record model="ir.ui.view" id="cdr_board_view">
