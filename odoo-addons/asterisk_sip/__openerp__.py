@@ -1,21 +1,20 @@
 {
-    'name': 'Odoo Asterisk SIP Peers Application',
+    'name': 'Odoo Asterisk SIP Peer Management Application',
     'summary': '',
     'description': """Manage Asterisk SIP peers.""",
     'version': '1.0',
     'category': 'Telephony',
     'author': 'Communicom',
     'website': 'http://communicom.ru',
-    'depends': ['asterisk_base',],
+    'depends': ['asterisk_base', 'asterisk_cdr'],
     'installable': True,
     'application': True,
     'auto_install': False,
     'data': [
-        'views.xml',
+        'views/common_views.xml',
+        'views/extensions.xml',
+        'views/agents.xml',
+        'views/providers.xml',
+        'views/gateways.xml',
     ],
-    'demo': [
-    ],
-    'js': [],
-    'css': [],
-    'qweb': [],
 }

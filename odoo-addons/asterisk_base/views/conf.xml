@@ -28,7 +28,7 @@
           <form>
             <header>
                 <button name="sync_conf" type="object" icon="fa-paper-plane"
-                    string="Sync File" class="oe_highlight"/>
+                    string="Sync File" class="oe_highlight oe_read_only"/>
             </header>
               <sheet>
                 <notebook>

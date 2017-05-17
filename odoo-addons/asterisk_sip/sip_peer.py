@@ -1,13 +1,29 @@
 from datetime import datetime, timedelta
-import humanize
 import logging
-from openerp import models, fields, api, _
-from openerp import sql_db
+import random
+import string
+import humanize
 import requests
 from urlparse import urljoin
+from openerp import models, fields, api, _
+from openerp import sql_db
+
 
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_SECRET_LENGTH = 10
+
+def _generate_secret(length=DEFAULT_SECRET_LENGTH):
+    chars = string.letters + string.digits
+    password = ''
+    while True:
+        password = ''.join(map(lambda x: random.choice(chars), range(length)))
+        if filter(lambda c: c.isdigit(), password) and \
+                filter(lambda c: c.isalpha(), password):
+            break
+    return password
+
 
 
 class SipPeer(models.Model):
@@ -32,7 +48,7 @@ class SipPeer(models.Model):
                             ('info', 'Info'), ('shortinfo', 'Short Info')])
     fromuser = fields.Char(size=80, string='From user')
     fromdomain = fields.Char(size=80, string='From domain')
-    host = fields.Char(size=31)
+    host = fields.Char(size=31, default='dynamic')
     insecure = fields.Char(size=32)
     language = fields.Char(size=2)
     mailbox = fields.Char(size=50)
@@ -52,13 +68,13 @@ class SipPeer(models.Model):
     restrictcid = fields.Char(size=1)
     rtptimeout = fields.Char(size=3, string='RTP timeout')
     rtpholdtimeout = fields.Char(size=3, string='RTP hold timeout')
-    secret = fields.Char(size=80)
+    secret = fields.Char(size=80, default=lambda x: _generate_secret())
     type = fields.Selection(selection=[('user', 'User'), ('peer', 'Peer'),
                                        ('friend', 'Friend')], required=True,
                                                               default='friend')
     username = fields.Char(size=80, default='', string='User name')
-    disallow = fields.Char(size=100, default='all')
-    allow = fields.Char(size=100, default='alaw;ulaw,gsm')
+    disallow = fields.Char(size=100, default='')
+    allow = fields.Char(size=100, default='all')
     musiconhold = fields.Char(size=100, string='Music on hold')
     regseconds = fields.Char(size=32)
     regseconds_human = fields.Char(compute='_get_regseconds_human',
@@ -79,6 +95,7 @@ class SipPeer(models.Model):
         ('provider', 'Provider'),
         ('gateway', 'Gateway'),
     ], index=True)
+    server = fields.Many2one(comodel_name='asterisk.server', required=True)
 
 
     _sql_constraints = [
@@ -114,6 +131,63 @@ class SipPeer(models.Model):
 
     """
 
+    @api.multi
+    def generate_sip_peers(self):
+        self.ensure_one()
+        sip_auto_conf = self.env['asterisk.conf'].search(['&',
+            ('filename', '=', 'sip_auto_peers.conf'),
+            ('server', '=', self.server.id)])
+        if not sip_auto_conf:
+            sip_auto_conf = self.env['asterisk.conf'].create({
+                'server': self.server.id,
+                'filename': 'sip_auto_peers.conf',
+            })
+            # Now let see if sip.conf includes sip_auto_peers
+            sip_conf = self.env['asterisk.conf'].search(['&',
+                ('server', '=', self.server.id),
+                ('filename', '=', 'sip.conf')])
+            found_include = False
+            for line in sip_conf.content:
+                if line.find('#tryinclude sip_auto_peers.conf') != -1:
+                    found_include = True
+                    break
+            if not found_include:
+                sip_conf.content += '\n\n#tryinclude sip_auto_peers.conf\n'
+
+        peers = []
+        content = u''
+        # Now do some sorting. We want extensins first, then agents, providers and gws.
+        peer_type_order = ['exten', 'agent', 'provider', 'gateway']
+        for pto in peer_type_order:
+            found_peers = self.env['asterisk.sip_peer'].search(
+                [('peer_type', '=', pto)], order='name')
+            for p in found_peers:
+                peers.append(p)
+        # Now let proceed peer fields
+        for peer in peers:
+            fields =  peer.fields_get_keys()
+            # Cleanup fields list to have only Asterisk options
+            fields_to_remove = ['create_date', 'create_uid', 'display_name',
+                                '__last_update', 'id', 'peer_type', 'server',
+                                'regseconds_human',
+                                'write_uid', 'write_date', 'note', 'name']
+            # Sort!
+            fields.sort()
+            for f in fields_to_remove:
+                fields.remove(f)
+            # Create section
+            content += u'[{}] ;{}\n'.format(peer.name, peer.note) if peer.note \
+                else u'[{}]\n'.format(peer.name)
+            gen = [f for f in fields if getattr(peer, f) != False]
+            for f in gen:
+                content += u'{} = {}\n'.format(f, getattr(peer, f))
+            content += '\n'
+        # Save config
+        sip_auto_conf.content = content
+        sip_auto_conf.sync_conf()
+
+
+
 
     @api.multi
     def _get_regseconds_human(self):
@@ -124,3 +198,9 @@ class SipPeer(models.Model):
             rec.regseconds_human = humanize.naturaltime(datetime.fromtimestamp(
                 float(rec.regseconds)
             ))
+
+
+    @api.multi
+    def sync(self):
+        self.ensure_one()
+        self.generate_sip_peers()

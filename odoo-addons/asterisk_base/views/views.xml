@@ -3,6 +3,9 @@
 
   <menuitem id="asterisk_menu" name="Asterisk" sequence="10"/>
 
+  <menuitem id="asterisk_apps_menu" parent="asterisk_menu" sequence="30"
+            name="Applications"/>
+
   <menuitem id="asterisk_reports_menu" parent="asterisk_menu" sequence="100"
             name="Reports"/>
 

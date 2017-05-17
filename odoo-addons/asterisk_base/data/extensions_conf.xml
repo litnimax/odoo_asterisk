@@ -36,6 +36,8 @@ exten => _X.,n,Macro(monitor)
 exten => _X.,n,Playback(demo-thanks)
 exten => _X.,n,Hangup
 
+#tryinclude extensions_custom.conf
+
       </field>
     </record>
   </data>

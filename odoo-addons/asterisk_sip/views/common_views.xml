@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp><data>
+
+    <menuitem name="SIP Peers" id="asterisk_sip_peers_menu"
+              parent="asterisk_base.asterisk_apps_menu" sequence="100"/>
+
+    <function name="grant_asterisk_access" model="asterisk.sip_peer"/>
+
+    <!-- Common views for SIP peers -->
+    <record model="ir.ui.view" id="asterisk_sip_peer_list">
+        <field name="name">asterisk sip peer list</field>
+        <field name="model">asterisk.sip_peer</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="server"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="asterisk_sip_peer_form">
+        <field name="name">asterisk sip peer form</field>
+        <field name="model">asterisk.sip_peer</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form>
+              <header>
+                <button name="sync" type="object" string="Sync"
+                            icon="fa-paper-plane"  class="oe_highlight oe_read_only"/>
+                </header>
+                <sheet>
+                  <div class="oe_title">
+                      <label for="name" class="oe_edit_only"/>
+                      <h1><field name="name"/> @ <field name="server" options="{'no_create': '1'}"/></h1>
+                      <small><label for="note" class="oe_edit_only"/><field name="note"/></small>
+                  </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sip_peer_search" model="ir.ui.view">
+        <field name="name">asterisk.sip_peer.search</field>
+        <field name="model">asterisk.sip_peer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="server"/>
+                <field name="ipaddr"/>
+            </search>
+        </field>
+    </record>
+
+
+</data></openerp>

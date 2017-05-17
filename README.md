@@ -3,6 +3,7 @@
 This project is Asterisk Management system and also Asterisk development platform based on [Odoo](http://odoo.com).
 
 Currently implemented features:
+* **Multi server management** - many Asterisk servers are managed from one place.
 * **Asterisk .conf files editor** with Asterisk syntax highlight. Configuration files are stored in Odoo database and delivered to Asterisk server via Asterisk internal HTTP server.
 * **Asterisk WEB console** with colors.
 * **Stasis apps server** implementing different business logic, e.g. set callerid name from Odoo contacts.

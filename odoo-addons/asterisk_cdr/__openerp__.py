@@ -6,7 +6,7 @@
     'category': 'Telephony',
     'author': 'Communicom',
     'website': 'http://communicom.ru',
-    'depends': ['web', 'asterisk_base'],
+    'depends': ['asterisk_base', 'board'],
     'installable': True,
     'application': True,
     'auto_install': False,

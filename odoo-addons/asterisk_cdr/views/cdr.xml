@@ -104,6 +104,7 @@
             <field name="arch" type="xml">
                 <graph type="bar" string="Call by day">
                     <field name='started' type='row'  interval="day"/>
+                    <field name='disposition' type='row'/>
                     <field name="billsec" type="measure"/>
                 </graph>
             </field>
@@ -116,6 +117,7 @@
             <field name="arch" type="xml">
                 <pivot display_quantity="true" string="Calls">
                     <field name='started' type='row'/>
+                    <field name='disposition' type='row'/>
                     <field name="billsec" type="measure"/>
                 </pivot>
             </field>
@@ -146,6 +148,40 @@
         </record>
 
         <function name="grant_asterisk_access" model="asterisk.cdr"/>
+
+        <!-- Dashboard -->
+        <record model="ir.ui.view" id="cdr_board_view">
+            <field name="name">Call Details Dashboard</field>
+            <field name="model">board.board</field>
+            <field name="arch" type="xml">
+                <form string="Call Details Dashboard">
+                    <board style="1-1">
+                      <column>
+                        <action context="{
+                          u'dashboard_merge_domains_contexts': False,
+                          u'graph_mode': u'bar',
+                          u'group_by': [u'src'],
+                          u'params': {u'action': 312},
+                          u'graph_groupbys': [u'src'],
+                          u'graph_measure': u'billsec'}"
+                          domain="[]" name="312" string="Болтуны" view_mode="graph" />
+                      </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="cdr_board_action">
+            <field name="name">Call Details Dashboard</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="cdr_board_view"/>
+        </record>
+
+        <menuitem id="cdr_board" parent="base.menu_board_root"
+                  action="cdr_board_action" sequence="10"/>
 
     </data>
 </odoo>
