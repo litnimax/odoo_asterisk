@@ -18,6 +18,9 @@ class AsteriskConf(models.Model):
     filename_on_create = fields.Char()
     server_on_create = fields.Many2one(comodel_name='asterisk.server',
         string='Server')
+    sync_date = fields.Datetime(readonly=True)
+    sync_uid = fields.Many2one('res.users', readonly=True, string='Sync by')
+
 
 
     _sql_constraints = [
@@ -45,3 +48,7 @@ class AsteriskConf(models.Model):
         session = self.server.get_ajam_session()
         self.server.sync_conf(self, session)
         self.server.asterisk_reload()
+        # Update last sync
+        self.sync_date = fields.Datetime.now()
+        self.sync_uid = self.env.uid
+        

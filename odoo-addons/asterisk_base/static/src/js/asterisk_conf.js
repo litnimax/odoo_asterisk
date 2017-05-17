@@ -64,11 +64,9 @@ odoo.define('asterisk_base.form_widgets', function (require) {
       this.internal_set_value(formats.parse_value(this.$el.val(), this));
     },
 
-    destroy_content2: function() {
-      console.log('destroy', this);
-    },
-
+    
     render_value: function() {
+      this._super();
       if (!this.get('effective_readonly')) {
         var value = formats.format_value(this.get('value'), this, '');
         this.myCodeMirror.setValue(value);
