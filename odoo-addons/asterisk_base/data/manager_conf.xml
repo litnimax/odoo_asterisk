@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-  <data noupdate="1">
+  <data>
     <record id="asterisk_manager_conf" model="asterisk.conf">
       <field name="filename">manager.conf</field>
       <field name="server" ref="asterisk_test_server"/>
@@ -22,8 +22,8 @@ httptimeout = 60
 secret = admin-secret
 deny=0.0.0.0/0.0.0.0
 permit=0.0.0.0/0.0.0.0
-read = call,cdr,user,config
-write = call,config,originate,reporting,command,system
+read = all
+write = all
       </field>
     </record>
   </data>
