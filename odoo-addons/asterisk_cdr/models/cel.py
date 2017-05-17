@@ -62,21 +62,6 @@ class Cel(models.Model):
     peer = fields.Char(size=80, string='Other channel', index=True)
     cdr = fields.Many2one('asterisk.cdr', ondelete='cascade')
 
-    def __init__(self, pool, cr):
-        init_res = super(Cel, self).__init__(pool, cr)
-        cr.execute("""CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
-            BEGIN
-            UPDATE asterisk_cel set cdr = NEW.id
-                WHERE asterisk_cel.uniqueid = NEW.uniqueid;
-            RETURN NULL;
-            END; $$ LANGUAGE 'plpgsql';
-
-            DROP TRIGGER IF EXISTS update_cel_cdr_field  on asterisk_cdr;
-            CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
-                FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
-            """)
-        return init_res
-
 
     @api.model
     def grant_asterisk_access(self):

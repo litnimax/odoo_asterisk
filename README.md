@@ -60,3 +60,19 @@ This folder contains additional helper applications:
 
 You should create a virtualenvironment using this folder's requirements.txt and run both scripts.
 See conf.py for configuration settings
+
+## After installation
+### Trigger for CEL
+Go to PgSQL console and run:
+```
+CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
+        BEGIN
+        UPDATE asterisk_cel set cdr = NEW.id
+            WHERE asterisk_cel.uniqueid = NEW.uniqueid;
+        RETURN NULL;
+        END; $$ LANGUAGE 'plpgsql';
+
+        DROP TRIGGER IF EXISTS update_cel_cdr_field  on asterisk_cdr;
+        CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
+            FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
+```
