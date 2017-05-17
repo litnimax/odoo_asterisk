@@ -55,6 +55,10 @@
                         <field name="write_date" string="Updated" readonly="1"/>
                         <field name="write_uid" string="Updated By" readonly="1"/>
                       </group>
+                      <group attrs="{'invisible': [('sync_date', '=', False)]}">
+                        <field name="sync_date"/>
+                        <field name="sync_uid"/>
+                      </group>
                     </group>
                   </page>
                 </notebook>
