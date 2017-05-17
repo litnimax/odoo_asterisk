@@ -7,9 +7,8 @@
              <field name="view_mode">tree,form,graph</field>
         </record>
 
-        <menuitem id="asterisk_cel_menu" parent='asterisk_base.asterisk_reports_menu'
-            name='Call Events'
-            action='asterisk_cel_action' sequence='200'/>
+        <menuitem id="asterisk_cel_menu" parent='asterisk_calls_menu'
+            name='Events' action='asterisk_cel_action' sequence='200'/>
 
         <record id='asterisk_cel_list' model='ir.ui.view'>
             <field name='name'>asterisk.cel.list</field>

@@ -10,9 +10,11 @@
             <field name="view_mode">tree,form,graph,pivot,calendar</field>
         </record>
 
-        <menuitem id="asterisk_cdr_menu" parent='asterisk_base.asterisk_reports_menu'
-            name='Call Details'
-            action='asterisk_cdr_action' sequence='100'/>
+        <menuitem id="asterisk_calls_menu" parent='asterisk_base.asterisk_reports_menu'
+            name='Calls' sequence='100'/>
+
+        <menuitem id="asterisk_calls_cdr_menu" parent='asterisk_calls_menu'
+            name='CDR' action='asterisk_cdr_action' sequence='100'/>
 
         <record id='asterisk_cdr_list' model='ir.ui.view'>
             <field name='name'>asterisk.cdr.list</field>

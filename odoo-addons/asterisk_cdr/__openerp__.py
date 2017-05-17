@@ -11,8 +11,8 @@
     'application': True,
     'auto_install': False,
     'data': [
+        'views/cdr.xml',    
         'views/cel.xml',
-        'views/cdr.xml',
     ],
     'demo': [
     ],
