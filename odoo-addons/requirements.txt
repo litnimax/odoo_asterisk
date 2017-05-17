@@ -1,0 +1,3 @@
+humanize
+git+https://github.com/litnimax/PyAjam.git
+requests
