@@ -11,7 +11,8 @@
     'application': True,
     'auto_install': False,
     'data': [
-        'views/common_views.xml',
+        'views/peer_status.xml',
+        'views/common_views.xml',        
         'views/extensions.xml',
         'views/agents.xml',
         'views/providers.xml',

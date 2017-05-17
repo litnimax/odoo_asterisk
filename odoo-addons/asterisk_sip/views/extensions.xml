@@ -25,7 +25,7 @@
         <field name="mode">primary</field>
         <field name="arch" type="xml">
           <data>
-            <div position="after">
+            <field name="peer_type" position="after">
               <notebook>
                 <page string="Basic Settings">
                   <group>
@@ -69,7 +69,7 @@
                   </group>
                 </page>
               </notebook>
-            </div>
+            </field>
           </data>
         </field>
     </record>

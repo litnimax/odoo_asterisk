@@ -96,11 +96,24 @@ class SipPeer(models.Model):
         ('gateway', 'Gateway'),
     ], index=True)
     server = fields.Many2one(comodel_name='asterisk.server', required=True)
+    peer_statuses = fields.One2many(comodel_name='asterisk.sip_peer_status',
+                                    inverse_name='peer')
+    peer_status_count = fields.Integer(compute='_get_peer_status_count',
+                                       store=True, string='Events')
+
 
 
     _sql_constraints = [
         ('name_uniq', 'UNIQUE(name)', _('Peer name must be unique!'))
     ]
+
+
+    @api.depends('peer_statuses')
+    def _get_peer_status_count(self):
+        for rec in self:
+            rec.peer_status_count = self.env[
+                'asterisk.sip_peer_status'].search_count([
+                    ('peer', '=', rec.id)])
 
 
     @api.model

@@ -37,12 +37,18 @@ def get_odoo_connection():
                 raise
 
 
+def handle_peer_status_message(message):
+    _logger.debug(message)
+    odoo.env['asterisk.sip_peer_status'].log_status(message)
+
+
+
 def handle_qos_message(message):
     # We have to give CDR some time to get into the database.
     # Odoo may not complete a WEB transaction so no record will be found to update.
     gevent.sleep(UPDATE_CDR_DELAY)
     _logger.debug(message)
-    #odoo.env['asterisk.cdr'].log_qos(message)
+    odoo.env['asterisk.cdr'].log_qos(message)
 
 
 def handle_call_recording(pbx, event):
@@ -114,10 +120,19 @@ class AmiEvents(object):
         gevent.spawn(handle_call_recording, pbx, event)
 
 
+    def peer_status_event(self, pbx, event):
+            # QoS of CDR
+            if event.get('ChannelType') == 'SIP':
+                # We only care about SIP registrations
+                gevent.spawn(handle_peer_status_message, event)
+
+
+
     def __init__(self):
         self.events = Asterisk.Util.EventCollection()
         self.events.subscribe('VarSet', self.var_set_event)
         self.events.subscribe('Hangup', self.hangup_event)
+        self.events.subscribe('PeerStatus', self.peer_status_event)
 
 
     def register(self, pbx):
