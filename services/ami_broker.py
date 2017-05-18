@@ -51,6 +51,22 @@ def handle_qos_message(message):
     odoo.env['asterisk.cdr'].log_qos(message)
 
 
+def handle_new_channel_message(message):
+    _logger.debug(message)
+    # Take the Channel from the message to make it serializable.
+    channel = message.pop('Channel')
+    message['Channel'] = '{}'.format(channel)
+    odoo.env['asterisk.channel'].new_channel(message)
+
+
+def handle_hangup_channel(message):
+    _logger.debug(message)
+    # Take the Channel from the message to make it serializable.
+    channel = message.pop('Channel')
+    message['Channel'] = '{}'.format(channel)
+    odoo.env['asterisk.channel'].hangup_channel(message)
+
+
 def handle_call_recording(pbx, event):
     _logger.debug('Handle recording.')
     # Make a delay to let Asterisk close recorded file.
@@ -114,17 +130,22 @@ class AmiEvents(object):
             gevent.spawn(handle_qos_message, values)
 
 
-    def hangup_event(self, pbx, event):
-        _logger.debug('Hangup event.')
-        # Spawn call recording handling.
-        gevent.spawn(handle_call_recording, pbx, event)
-
-
     def peer_status_event(self, pbx, event):
             # QoS of CDR
             if event.get('ChannelType') == 'SIP':
                 # We only care about SIP registrations
                 gevent.spawn(handle_peer_status_message, event)
+
+
+    def new_channel_event(self, pbx, event):
+        gevent.spawn(handle_new_channel_message, event)
+
+
+    def hangup_event(self, pbx, event):
+        _logger.debug('Hangup event.')
+        # Spawn call recording handling.
+        gevent.spawn(handle_call_recording, pbx, event)
+        gevent.spawn(handle_hangup_channel, event)
 
 
 
@@ -133,6 +154,7 @@ class AmiEvents(object):
         self.events.subscribe('VarSet', self.var_set_event)
         self.events.subscribe('Hangup', self.hangup_event)
         self.events.subscribe('PeerStatus', self.peer_status_event)
+        self.events.subscribe('Newchannel', self.new_channel_event)
 
 
     def register(self, pbx):

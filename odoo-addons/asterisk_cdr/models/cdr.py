@@ -98,12 +98,13 @@ class Cdr(models.Model):
         _logger.debug(values)
         uniqueid = values.get('uniqueid')
         linkedid = values.get('linkedid')
+        # TODO Probably we need to optimize db query on millions of records.
         cdrs = self.env['asterisk.cdr'].search([
+            #('ended', '>', (datetime.now() - timedelta(seconds=120)).strftime(
+            #    '%Y-%m-%d %H:%M:%S')
+            #),
             ('uniqueid', '=', uniqueid),
-            ('linkedid', '=', linkedid),
-            ('end', '>', (datetime.now() - timedelta(seconds=10)).strftime(
-                '%Y-%m-%d %H:%M:%S')
-            ),
+            #('linkedid', '=', linkedid),
         ])
         if not cdrs:
             _logger.warning('Omitting QoS, CDR not found!')
