@@ -6,7 +6,7 @@
     'category': 'Telephony',
     'author': 'Communicom',
     'website': 'http://communicom.ru',
-    'depends': ['web'],
+    'depends': ['web', 'bus'],
     'installable': True,
     'application': True,
     'auto_install': False,
@@ -15,10 +15,11 @@
         'views/templates.xml',
         'views/conf.xml',
         'views/server.xml',
+        'views/channel.xml',
         'views/settings.xml',
         # Data files
+        'data/server.xml', # Must be the first data view to import.
         'data/ari_conf.xml',
-        'data/server.xml',
         'data/features_conf.xml',
         'data/http_conf.xml',
         'data/manager_conf.xml',
