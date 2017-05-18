@@ -18,8 +18,13 @@
           <tree>
               <button name="update" type="object" string="Update"
                 icon="fa-exchange" class="oe_highlight"/>
-              <field name="channel"/>
-              <field name="uniqueid"/>
+              <field name="exten"/>
+              <field name="state"/>
+              <field name="state_desc"/>
+              <field name="callerid_num"/>
+              <field name="callerid_name"/>
+              <field name="connected_line_num"/>
+              <field name="connected_line_name"/>              
           </tree>
       </field>
   </record>
@@ -37,6 +42,27 @@
                 <group>
                   <group>
                     <field name="channel"/>
+                    <field name="context"/>
+                    <field name="state"/>
+                    <field name="state_desc"/>
+                    <field name="exten"/>
+                    <field name="priority"/>
+                  </group>
+                  <group>
+                    <field name="callerid_num"/>
+                    <field name="callerid_name"/>
+                    <field name="connected_line_num"/>
+                    <field name="connected_line_name"/>
+                  </group>
+                </group>
+                <group>
+                  <group>
+                    <field name="system_name"/>
+                    <field name="accountcode"/>
+                  </group>
+                  <group>
+                    <field name="timestamp"/>
+                    <field name="uniqueid"/>
                   </group>
                 </group>
               </sheet>

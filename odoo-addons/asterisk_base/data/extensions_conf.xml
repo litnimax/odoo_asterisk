@@ -30,11 +30,15 @@ exten => stasis-error,n,Hangup
 
 [extensions]
 include => stasis-error
-exten => _X.,1,Answer
+exten => _X.,1,Wait(2)
+exten => _X.,n,Ringing
+exten => _X.,n,Answer
+exten => _X.,n,Wait(2)
 exten => _X.,n,Stasis(odoo,set_callerid)
 exten => _X.,n,Macro(monitor)
 exten => _X.,n,Playback(demo-thanks)
 exten => _X.,n,Hangup
+
 
 #tryinclude extensions_custom.conf
 

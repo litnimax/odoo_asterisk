@@ -17,6 +17,7 @@ endbeforehexten = yes
 usegmtime=yes
 loguniqueid=yes
 loguserfield=yes
+newcdrcolumns=yes
       </field>
     </record>
   </data>

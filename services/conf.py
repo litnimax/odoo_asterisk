@@ -28,6 +28,7 @@ conf = {
 }
 
 UPDATE_CDR_DELAY = 3 # Delay X sec before updating cdr to make sure it's in DB.
+UPDATE_CHANNEL_DELAY = 1 # Delay X sec before updating cdr to make sure it's in DB.
 RECORDING_DOWNLOAD_DELAY = 1 # Delay to let Asterisk close recorded file.
 
 LOG_CONSOLE = True

@@ -31,14 +31,14 @@ class SipPeerStatus(models.Model):
     @api.model
     def log_status(self, values):
         if values.get('Event') != 'PeerStatus' or values.get('ChannelType') != 'SIP':
-            logger.error('Wrong event for Asterisk SIP peer status: {}'.format(
+            _logger.error('Wrong event for Asterisk SIP peer status: {}'.format(
                 values))
             return False
 
         channel, peer_name = values.get('Peer', '/').split('/')
         peer = self.env['asterisk.sip_peer'].search([('name', '=', peer_name)])
         if not peer:
-            logger.warning('Did not find peer {} to update status.'.format(
+            _logger.warning('Did not find peer {} to update status.'.format(
                 peer_name
             ))
             return False
@@ -59,7 +59,7 @@ class SipPeerStatus(models.Model):
         records = self.search([('create_date', '<', fields.Datetime.to_string(
             datetime.now() - timedelta(days=days)))])
         if records:
-            logger.info('Deleting {} peer statuses.'.format(len(records)))
+            _logger.info('Deleting {} peer statuses.'.format(len(records)))
             records.unlink()
 
 

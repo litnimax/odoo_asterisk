@@ -52,15 +52,26 @@ def handle_qos_message(message):
 
 
 def handle_new_channel_message(message):
-    _logger.debug(message)
+    _logger.debug('New Channel: {}'.format(message))
+    gevent.sleep(UPDATE_CHANNEL_DELAY)
     # Take the Channel from the message to make it serializable.
     channel = message.pop('Channel')
     message['Channel'] = '{}'.format(channel)
     odoo.env['asterisk.channel'].new_channel(message)
 
 
+def handle_new_channel_state_message(message):
+    _logger.debug('New Channel State: {}'.format(message))
+    gevent.sleep(UPDATE_CHANNEL_DELAY)
+    # Take the Channel from the message to make it serializable.
+    channel = message.pop('Channel')
+    message['Channel'] = '{}'.format(channel)
+    odoo.env['asterisk.channel'].new_channel_state(message)
+
+
 def handle_hangup_channel(message):
-    _logger.debug(message)
+    _logger.debug('Hangup Channel: {}'.format(message))
+    gevent.sleep(UPDATE_CHANNEL_DELAY)
     # Take the Channel from the message to make it serializable.
     channel = message.pop('Channel')
     message['Channel'] = '{}'.format(channel)
@@ -141,6 +152,10 @@ class AmiEvents(object):
         gevent.spawn(handle_new_channel_message, event)
 
 
+    def new_channel_state_event(self, pbx, event):
+        gevent.spawn(handle_new_channel_state_message, event)
+
+
     def hangup_event(self, pbx, event):
         _logger.debug('Hangup event.')
         # Spawn call recording handling.
@@ -155,6 +170,7 @@ class AmiEvents(object):
         self.events.subscribe('Hangup', self.hangup_event)
         self.events.subscribe('PeerStatus', self.peer_status_event)
         self.events.subscribe('Newchannel', self.new_channel_event)
+        self.events.subscribe('Newstate', self.new_channel_state_event)
 
 
     def register(self, pbx):

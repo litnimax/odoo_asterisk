@@ -9,28 +9,65 @@ class Channel(models.Model):
     _rec_name = 'channel'
 
     channel = fields.Char(index=True)
-    uniqueid = fields.Char(size=150, string='Uniqueid', index=True)
+    uniqueid = fields.Char(size=150, index=True)
+    linkedid = fields.Char(size=150, index=True)
+    context = fields.Char(size=80)
+    connected_line_num = fields.Char(size=80)
+    connected_line_name = fields.Char(size=80)
+    state = fields.Char(size=80)
+    state_desc = fields.Char(size=256, string="State Description")
+    exten = fields.Char(size=32)
+    callerid_num = fields.Char(size=32)
+    callerid_name = fields.Char(size=32)
+    system_name = fields.Char(size=32)
+    accountcode = fields.Char(size=80)
+    priority = fields.Char(size=4)
+    timestamp = fields.Char(size=20)
 
-    """
-{u'Context': u'extensions', u'ConnectedLineNum': u'<unknown>',
- u'Func': u'channel_snapshot_update', u'SequenceNumber': u'971',
- u'AccountCode': '', u'ChannelState': u'0', u'Timestamp': u'1495105534.669549',
- u'Exten': u'200', u'CallerIDNum': u'test1', u'Uniqueid': u'ubuntu-1495105534.144',
- u'Priority': u'1', u'ConnectedLineName': u'<unknown>',
- u'SystemName': u'ubuntu', u'File': u'manager_channels.c',
-  u'CallerIDName': u'<unknown>',
-  u'Privilege': u'call,all', u'Line': u'650', u'Event': u'Newchannel',
-  u'Channel': <Asterisk.Manager.BaseChannel referencing channel u'SIP/test1-00000015' o
-  f <Asterisk.Manager.Manager connected as asterisk_admin to 192.168.56.102:5038>>,
-   u'ChannelStateDesc': u'Down'}
-    """
 
     @api.model
     def new_channel(self, values):
         self.create({
             'channel': values.get('Channel'),
-            'uniqueid': values.get('Uniqueid')
+            'uniqueid': values.get('Uniqueid'),
+            'context': values.get('Context'),
+            'connected_line_num': values.get('ConnectedLineNum'),
+            'connected_line_name': values.get('ConnectedLineName'),
+            'state': values.get('ChannelState'),
+            'state_desc': values.get('ChannelStateDesc'),
+            'exten': values.get('Exten'),
+            'callerid_num': values.get('CallerIDNum'),
+            'callerid_name': values.get('CallerIDName'),
+            'accountcode': values.get('AccountCode'),
+            'priority': values.get('Priority'),
+            'timestamp': values.get('Timestamp'),
+            'system_name': values.get('SystemName'),
         })
+        return True
+
+
+    @api.model
+    def new_channel_state(self, values):
+        channel = self.search([
+            ('uniqueid', '=', values.get('Uniqueid'))])
+        if channel:
+            channel.write({
+                'channel': values.get('Channel'),
+                'linkedid': values.get('Linkedid'),
+                'context': values.get('Context'),
+                'connected_line_num': values.get('ConnectedLineNum'),
+                'connected_line_name': values.get('ConnectedLineName'),
+                'state': values.get('ChannelState'),
+                'state_desc': values.get('ChannelStateDesc'),
+                'exten': values.get('Exten'),
+                'callerid_num': values.get('CallerIDNum'),
+                'callerid_name': values.get('CallerIDName'),
+                'accountcode': values.get('AccountCode'),
+                'priority': values.get('Priority'),
+        })
+        else:
+            _logger.warning('No channel {} found for state update.'.format(
+            values.get('Uniqueid')))
         return True
 
 
@@ -44,3 +81,4 @@ class Channel(models.Model):
             found.unlink()
         else:
             _logger.warning('Channel {} not found for hangup.'.format(uniqueid))
+        return True
