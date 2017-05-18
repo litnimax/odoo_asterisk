@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id='asterisk_cel_action' model='ir.actions.act_window'>
             <field name='name'>Call Events</field>
             <field name='res_model'>asterisk.cel</field>
@@ -81,6 +82,8 @@
             <field name='type'>search</field>
             <field name='arch' type='xml'>
                 <search string="CEL Request">
+                    <field name='eventtype'/>
+                    <field name='eventtime'/>
                     <field name="appname"/>
                     <field name="peer"/>
                     <field name="cid_num"/>
@@ -99,8 +102,7 @@
 
             <field name="arch" type="xml">
                 <graph orientation="horizontal" string="Calls" type="pivot" stacked="True">
-                    <field name="accountcode" type="row"/>
-                    <field name="eventtype" type="col"/>
+                    <field name="eventtype" type="row"/>
                 </graph>
             </field>
         </record>

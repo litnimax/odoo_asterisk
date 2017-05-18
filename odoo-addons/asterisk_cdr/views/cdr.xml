@@ -10,6 +10,14 @@
             <field name="view_mode">tree,form,graph,pivot,calendar</field>
         </record>
 
+        <record id='asterisk_cdr_cel_action' model='ir.actions.act_window'>
+            <field name='name'>CDR Events</field>
+            <field name='res_model'>asterisk.cel</field>
+            <field name="domain">[('cdr','=', active_id)]</field>
+            <field name="view_mode">tree,form,graph</field>
+        </record>
+
+
         <menuitem id="asterisk_calls_menu" parent='asterisk_base.asterisk_reports_menu'
             name='Calls' sequence='100'/>
 
@@ -41,9 +49,7 @@
                 <form edit='false' create="false" string='cdr'>
                   <sheet>
                     <div class="oe_button_box oe_right" >
-                      <button name="%(asterisk_cel_action)d" type="action"
-                              domain="[('cdr', '=', active_id)]"
-                              context="{'search_default_uniqueid': uniqueid}"
+                      <button name="%(asterisk_cdr_cel_action)d" type="action"                              
                               class="oe_stat_button"  icon="fa-bars">
                           <field name="cel_count"
                                  string="Call Events" widget="statinfo"/>
