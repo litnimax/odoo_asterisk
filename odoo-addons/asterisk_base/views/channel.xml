@@ -19,12 +19,14 @@
               <button name="update" type="object" string="Update"
                 icon="fa-exchange" class="oe_highlight"/>
               <field name="exten"/>
-              <field name="state"/>
+              <field name="state" invisible="1"/>
               <field name="state_desc"/>
               <field name="callerid_num"/>
               <field name="callerid_name"/>
               <field name="connected_line_num"/>
-              <field name="connected_line_name"/>              
+              <field name="connected_line_name"/>
+              <field name="uniqueid"/>
+              <field name="linkedid"/>
           </tree>
       </field>
   </record>
@@ -53,6 +55,8 @@
                     <field name="callerid_name"/>
                     <field name="connected_line_num"/>
                     <field name="connected_line_name"/>
+                    <field name="app"/>
+                    <field name="app_data"/>
                   </group>
                 </group>
                 <group>
@@ -63,6 +67,7 @@
                   <group>
                     <field name="timestamp"/>
                     <field name="uniqueid"/>
+                    <field name="linkedid"/>
                   </group>
                 </group>
               </sheet>

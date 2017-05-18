@@ -53,7 +53,6 @@ def handle_qos_message(message):
 
 def handle_new_channel_message(message):
     _logger.debug('New Channel: {}'.format(message))
-    gevent.sleep(UPDATE_CHANNEL_DELAY)
     # Take the Channel from the message to make it serializable.
     channel = message.pop('Channel')
     message['Channel'] = '{}'.format(channel)
@@ -61,7 +60,7 @@ def handle_new_channel_message(message):
 
 
 def handle_new_channel_state_message(message):
-    _logger.debug('New Channel State: {}'.format(message))
+    _logger.debug('Channel State {}: {}'.format(message.get('Event'), message))
     gevent.sleep(UPDATE_CHANNEL_DELAY)
     # Take the Channel from the message to make it serializable.
     channel = message.pop('Channel')
@@ -171,6 +170,8 @@ class AmiEvents(object):
         self.events.subscribe('PeerStatus', self.peer_status_event)
         self.events.subscribe('Newchannel', self.new_channel_event)
         self.events.subscribe('Newstate', self.new_channel_state_event)
+        self.events.subscribe('NewExten', self.new_channel_state_event)
+        self.events.subscribe('NewConnectedLine', self.new_channel_state_event)
 
 
     def register(self, pbx):

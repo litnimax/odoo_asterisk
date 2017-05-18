@@ -23,6 +23,8 @@ class Channel(models.Model):
     accountcode = fields.Char(size=80)
     priority = fields.Char(size=4)
     timestamp = fields.Char(size=20)
+    app = fields.Char(size=32, string='Application')
+    app_data = fields.Char(size=512, string='Application Data')
 
 
     @api.model
@@ -43,6 +45,7 @@ class Channel(models.Model):
             'timestamp': values.get('Timestamp'),
             'system_name': values.get('SystemName'),
         })
+        self.env['bus.bus'].sendone('asterisk_channels', 'message');
         return True
 
 
@@ -64,10 +67,13 @@ class Channel(models.Model):
                 'callerid_name': values.get('CallerIDName'),
                 'accountcode': values.get('AccountCode'),
                 'priority': values.get('Priority'),
+                'app': values.get('Application'),
+                'app_data': values.get('AppData'),
         })
         else:
             _logger.warning('No channel {} found for state update.'.format(
             values.get('Uniqueid')))
+        self.env['bus.bus'].sendone('asterisk_channels', 'message');
         return True
 
 
@@ -81,4 +87,5 @@ class Channel(models.Model):
             found.unlink()
         else:
             _logger.warning('Channel {} not found for hangup.'.format(uniqueid))
+        self.env['bus.bus'].sendone('asterisk_channels', 'message');
         return True

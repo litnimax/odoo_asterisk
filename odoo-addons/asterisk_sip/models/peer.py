@@ -217,4 +217,4 @@ class SipPeer(models.Model):
     def sync(self):
         self.ensure_one()
         self.generate_sip_peers()
-        self.env['bus.bus'].sendone('asterisk_channels', 'message');
+        
