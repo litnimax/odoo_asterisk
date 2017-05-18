@@ -28,7 +28,7 @@ exten => stasis-error,n,Playback(error-has-occured)
 exten => stasis-error,n,Hangup
 
 
-[test]
+[extensions]
 include => stasis-error
 exten => _X.,1,Answer
 exten => _X.,n,Stasis(odoo,set_callerid)
