@@ -100,7 +100,8 @@ class AsteriskServer(models.Model):
 
     def asterisk_reload(self):
         self.ensure_one()
-        self.asterisk_command('reload')
+        self.asterisk_command('module reload')
+        self.asterisk_command('dialplan reload')
 
 
     def get_ajam_session(self):
