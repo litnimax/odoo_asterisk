@@ -49,7 +49,8 @@
                 <form edit='false' create="false" string='cdr'>
                   <sheet>
                     <div class="oe_button_box oe_right" >
-                      <button name="%(asterisk_cdr_cel_action)d" type="action"                              
+                      <button name="%(asterisk_cdr_cel_action)d" type="action"
+                              context="{'search_default_uniqueid': uniqueid}"
                               class="oe_stat_button"  icon="fa-bars">
                           <field name="cel_count"
                                  string="Call Events" widget="statinfo"/>
@@ -67,17 +68,18 @@
                                 <field name='billsec' readonly='1'/>
                                 <field name='accountcode' readonly='1'/>
                                 <field name='uniqueid' readonly='1'/>
-                                <field name='userfield' readonly='1'/>
+                                <field name='linkedid' readonly='1'/>
                             </group>
                             <group>
+                                <field name="sequence" readonly="1"/>
                                 <field name='clid' readonly='1'/>
                                 <field name='dcontext' readonly='1'/>
                                 <field name='channel' readonly='1'/>
                                 <field name='dstchannel' readonly='1'/>
                                 <field name='peeraccount' readonly='1'/>
-                                <field name='linkedid' readonly='1'/>
                                 <field name='lastapp' readonly='1'/>
                                 <field name='lastdata' readonly='1'/>
+                                <field name='userfield' readonly='1'/>
                                 <field name='amaflags' readonly='1'/>
                             </group>
                         </group>
@@ -142,12 +144,16 @@
                 <search string="CDR Request">
                     <field name="src"/>
                     <field name="dst"/>
+                    <field name="channel"/>
                     <field name="started"/>
                     <filter string="Answered" domain="[('disposition','=','ANSWERED')]"/>
                     <filter string="Busy" domain="[('disposition','=','BUSY')]"/>
                     <filter string="No answer" domain="[('disposition','=','NO ANSWER')]"/>
                     <filter string="Failed" domain="[('disposition','=','FAILED')]"/>
                     <filter string="Congestion" domain="[('disposition','=','CONGESTION')]"/>
+                    <filter string="Today" domain="[
+                        ('started', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                        ('started', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))]"/>
 
                     <filter string="Src" domain="[]" context="{'group_by':'src'}"/>
                     <filter string="Dst" domain="[]" context="{'group_by':'dst'}"/>

@@ -107,7 +107,8 @@ class Cdr(models.Model):
             #('linkedid', '=', linkedid),
         ])
         if not cdrs:
-            _logger.warning('Omitting QoS, CDR not found!')
+            _logger.warning('Omitting QoS, CDR not found, uniqueid {}!'.format(
+                uniqueid))
             return False
         else:
             _logger.debug('Found CDR for QoS.')

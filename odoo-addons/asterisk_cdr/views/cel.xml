@@ -21,15 +21,7 @@
                     <field name='eventtime'/>
                     <field name='exten'/>
                     <field name='context'/>
-                    <field name='channame'/>
                     <field name='appname'/>
-                    <field name='appdata'/>
-                    <field name='accountcode'/>
-                    <field name='peer'/>
-                    <field name='peeraccount'/>
-                    <field name='exten'/>
-                    <field name='uniqueid'/>
-                    <field name='linkedid'/>
                     <field name='cid_num'/>
                     <field name='cid_name'/>
                     <field name='cid_ani'/>
@@ -44,35 +36,41 @@
             <field name='model'>asterisk.cel</field>
             <field name='type'>form</field>
             <field name='arch' type='xml'>
-                <form string='CEL' edit="false" create="false">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name='eventtype'/>
-                                <field name='eventtime'/>
-                                 <field name='context'/>
-                                <field name='exten'/>
-                                <field name='channame'/>
-                                <field name='peer'/>
-                                <field name='appname'/>
-                                <field name='appdata'/>
-                                <field name='uniqueid'/>
-                                <field name='linkedid'/>
-                                <field name='cid_num'/>
-                                <field name='cid_name'/>
-                                <field name='cid_dnid'/>
-                                <field name='cid_rdnis'/>
-                                <field name='cid_ani'/>
-                                <field name='userfield'/>
-                                <field name='accountcode'/>
-                                <field name='peeraccount'/>
-                                <field name='amaflags'/>
-                                <field name='userdeftype'/>
-                                <field name='cdr' options="{'no_create': True}"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
+              <form string='CEL' edit="false" create="false">
+                  <sheet>
+                    <group>
+                      <group>
+                        <field name='eventtype'/>
+                        <field name='eventtime'/>
+                        <field name='context'/>
+                        <field name='exten'/>
+                        <field name='appname'/>
+                        <field name='appdata'/>
+                      </group>
+                      <group>
+                        <field name='cid_num'/>
+                        <field name='cid_name'/>
+                        <field name='cid_dnid'/>
+                        <field name='cid_rdnis'/>
+                        <field name='cid_ani'/>
+                      </group>
+                    </group>
+                    <group>
+                      <group>
+                        <field name='uniqueid'/>
+                        <field name='linkedid'/>
+                        <field name='userfield'/>
+                        <field name='amaflags'/>
+                      </group>
+                      <group>
+                        <field name='accountcode'/>
+                        <field name='peeraccount'/>
+                        <field name='userdeftype'/>
+                        <field name='cdr' options="{'no_create': True}"/>
+                      </group>
+                    </group>
+                  </sheet>
+              </form>
             </field>
         </record>
 

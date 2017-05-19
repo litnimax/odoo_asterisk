@@ -4,31 +4,31 @@ from odoo import sql_db
 ASTERISK_ROLE = 'asterisk' # This PostgreSQL role is used to grant access to CEL table
 
 CEL_TYPES = (
-    ('CHAN_START', _('Channel started')),
-    ('CHAN_END', _('The time a channel was terminated')),
-    ('ANSWER', _('The time a channel was answered (ie, phone taken off-hook)')),
-    ('HANGUP', _('The time at which a hangup occurred')),
-    ('CONF_ENTER', _('The time a channel was connected into a conference room')),
-    ('CONF_EXIT', _('The time a channel was removed from a conference room')),
-    ('CONF_START', _('The time the first person enters a conference room')),
-    ('CONF_END', _('The time the last person left a conference room')),
-    ('APP_START', _('The time a tracked application was started')),
-    ('APP_END', _('The time a tracked application ended')),
-    ('PARK_START', _('The time a call was parked')),
-    ('PARK_END', _('Unpark event')),
-    ('BRIDGE_START', _('The time a bridge is started')),
-    ('BRIDGE_END', _('The time a bridge is ended')),
-    ('BRIDGE_UPDATE', _('This is a replacement channel (Masquerade)')),
-    ('3WAY_START', _('When a 3-way conference starts (usually via attended transfer)')),
-    ('3WAY_END', _('When one or all exit a 3-way conference')),
-    ('BLINDTRANSFER', _('When a blind transfer is initiated')),
-    ('ATTENDEDTRANSFER', _('When an attended transfer is initiated')),
-    ('TRANSFER', _('Generic transfer initiated; not used yet...?')),
-    ('PICKUP', _('This channel picked up the peer channel')),
-    ('FORWARD', _('This channel is being forwarded somewhere else')),
-    ('HOOKFLASH', _('So far, when a hookflash event occurs on a DAHDI interface')),
-    ('LINKEDID_END', _('The last channel with the given linkedid is retired')),
-    ('USER_DEFINED', _('Triggered from the dialplan, and has a name given by the user')),
+    ('CHAN_START', _('Start')),
+    ('CHAN_END', _('End')),
+    ('ANSWER', _('Answer')),
+    ('HANGUP', _('Hangup')),
+    ('CONF_ENTER', _('Enter conference')),
+    ('CONF_EXIT', _('Exit conference')),
+    ('CONF_START', _('Conference start')),
+    ('CONF_END', _('Conference end')),
+    ('APP_START', _('Application start')),
+    ('APP_END', _('Application end')),
+    ('PARK_START', _('Park')),
+    ('PARK_END', _('Unpark')),
+    ('BRIDGE_START', _('Bridge start')),
+    ('BRIDGE_END', _('Bridge end')),
+    ('BRIDGE_UPDATE', _('Bridge update')),
+    ('3WAY_START', _('Three way start')),
+    ('3WAY_END', _('Three way end')),
+    ('BLINDTRANSFER', _('Blind transfer')),
+    ('ATTENDEDTRANSFER', _('Attended transfer')),
+    ('TRANSFER', _('Generic transfer')),
+    ('PICKUP', _('Pickup')),
+    ('FORWARD', _('Forward')),
+    ('HOOKFLASH', _('Hookflash')),
+    ('LINKEDID_END', _('Linkedid end')),
+    ('USER_DEFINED', _('User defined')),
 )
 
 class Cel(models.Model):
@@ -39,7 +39,7 @@ class Cel(models.Model):
     eventtype = fields.Selection(size=30, string='Event type',
         selection=CEL_TYPES,
         help='The name of the event',index=True)
-    eventtime = fields.Datetime(string='Event time', index=True)
+    eventtime = fields.Datetime(string='Time', index=True)
     userdeftype = fields.Char(size=255, string='User event type', index=True)
     cid_name = fields.Char(size=80, string='CID name', index=True)
     cid_num = fields.Char(size=80, string='CID number', index=True)
