@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp><data>
 
-    <record model="ir.ui.view" id="asterisk_sip_peer_gateway_list">
-        <field name="name">asterisk sip peer gateways</field>
+    <record model="ir.ui.view" id="asterisk_sip_peer_user_list">
+        <field name="name">asterisk sip peer users</field>
         <field name="model">asterisk.sip_peer</field>
         <field name="inherit_id" ref="asterisk_sip_peer_list"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
           <data>
             <field name="server" position="after">
-              <field name="host"/>
+              <field name="ipaddr"/>
+              <field name="regseconds_human"/>
+              <field name="useragent"/>
+              <field name="fullcontact"/>
             </field>
           </data>
         </field>
     </record>
 
-    <record model="ir.ui.view" id="asterisk_sip_peer_gateway_form">
-        <field name="name">asterisk sip peer gateway form</field>
+    <record model="ir.ui.view" id="asterisk_sip_peer_user_form">
+        <field name="name">asterisk sip peer user form</field>
         <field name="model">asterisk.sip_peer</field>
         <field name="inherit_id" ref="asterisk_sip_peer_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
           <data>
-            <div position="after">
+            <field name="peer_type" position="after">
               <notebook>
                 <page string="Basic Settings">
                   <group>
                     <group string="Main">
-                        <field name="host" required="1"/>
                         <field name="secret" required="1"/>
+                        <field name="callerid"/>
+                        <field name="host" required="1"/>
                         <field name="context" required="True"/>
                         <field name="deny"/>
                         <field name="permit"/>
-                        <field name="callerid"/>
+                        <field name="language"/>
                     </group>
                     <group string="Media">
                       <field name="dtmfmode"/>
@@ -47,6 +51,11 @@
                       <field name="ipaddr" class="oe_read_only"/>
                       <field name="port" class="oe_read_only"/>
                     </group>
+                    <group>
+                      <field name="useragent" class="oe_read_only"/>
+                      <field name="fullcontact" class="oe_read_only"/>
+                      <field name="regseconds_human" class="oe_read_only"/>
+                    </group>
                   </group>
                 </page>
                 <page string="Advanced Settings">
@@ -56,35 +65,34 @@
                       <field name="canreinvite"/>
                       <field name="rtptimeout"/>
                       <field name="rtpholdtimeout"/>
-                      <field name="language"/>
                     </group>
                   </group>
                 </page>
               </notebook>
-            </div>
+            </field>
           </data>
         </field>
     </record>
 
 
-    <record model="ir.actions.act_window" id="asterisk_sip_peer_gateway_action">
-        <field name="name">Gateways</field>
+    <record model="ir.actions.act_window" id="asterisk_sip_peer_user_action">
+        <field name="name">Users</field>
         <field name="res_model">asterisk.sip_peer</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-          (0, 0, {'view_mode': 'tree', 'view_id': ref('asterisk_sip_peer_gateway_list')}),
-          (0, 0, {'view_mode': 'form', 'view_id': ref('asterisk_sip_peer_gateway_form')})]"/>
-        <field name="domain">[('peer_type', '=', 'gateway')]</field>
+          (0, 0, {'view_mode': 'tree', 'view_id': ref('asterisk_sip_peer_user_list')}),
+          (0, 0, {'view_mode': 'form', 'view_id': ref('asterisk_sip_peer_user_form')})]"/>
+        <field name="domain">[('peer_type', '=', 'user')]</field>
         <field name="context">{
-            'default_peer_type': 'gateway',
+            'default_peer_type': 'user',
             'default_type': 'friend',
-            'default_context': 'gateways',
+            'default_context': 'users',
             }
         </field>
     </record>
 
-    <menuitem name="Gateways" parent="asterisk_sip_peers_menu" sequence="40"
-              action="asterisk_sip_peer_gateway_action" id="asterisk_sip_peer_gateway_menu"/>
+    <menuitem name="Users" parent="asterisk_sip_peers_menu" sequence="10"
+              action="asterisk_sip_peer_user_action" id="asterisk_sip_peer_user_menu"/>
 
 
 </data></openerp>

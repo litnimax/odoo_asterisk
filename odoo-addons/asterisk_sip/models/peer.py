@@ -9,7 +9,6 @@ from openerp import models, fields, api, _
 from openerp import sql_db
 
 
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_SECRET_LENGTH = 10
@@ -72,8 +71,8 @@ class SipPeer(models.Model):
     type = fields.Selection(selection=[('user', 'User'), ('peer', 'Peer'),
                                        ('friend', 'Friend')], required=True,
                                                               default='friend')
-    username = fields.Char(size=80, default='', string='User name')
-    disallow = fields.Char(size=100, default='')
+    username = fields.Char(size=80, string='User name')
+    disallow = fields.Char(size=100)
     allow = fields.Char(size=100, default='all')
     musiconhold = fields.Char(size=100, string='Music on hold')
     regseconds = fields.Char(size=32)
@@ -90,10 +89,8 @@ class SipPeer(models.Model):
     regserver = fields.Char(size=80)
     callbackextension = fields.Char(size=250)
     peer_type = fields.Selection(selection=[
-        ('exten', 'Exten'),
-        ('agent', 'Agent'),
-        ('provider', 'Provider'),
-        ('gateway', 'Gateway'),
+        ('user', 'User'),
+        ('trunk', 'Trunk'),
     ], index=True)
     server = fields.Many2one(comodel_name='asterisk.server', required=True)
     peer_statuses = fields.One2many(comodel_name='asterisk.sip_peer_status',
@@ -170,7 +167,7 @@ class SipPeer(models.Model):
         peers = []
         content = u''
         # Now do some sorting. We want extensins first, then agents, providers and gws.
-        peer_type_order = ['exten', 'agent', 'provider', 'gateway']
+        peer_type_order = ['user', 'trunk']
         for pto in peer_type_order:
             found_peers = self.env['asterisk.sip_peer'].search(
                 [('peer_type', '=', pto)], order='name')
@@ -217,4 +214,3 @@ class SipPeer(models.Model):
     def sync(self):
         self.ensure_one()
         self.generate_sip_peers()
-        

@@ -12,10 +12,8 @@
     'auto_install': False,
     'data': [
         'views/peer_status.xml',
-        'views/common_views.xml',        
-        'views/extensions.xml',
-        'views/agents.xml',
-        'views/providers.xml',
-        'views/gateways.xml',
+        'views/common_views.xml',
+        'views/user.xml',
+        'views/trunk.xml',
     ],
 }

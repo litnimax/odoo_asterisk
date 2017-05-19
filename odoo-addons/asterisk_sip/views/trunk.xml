@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp><data>
 
-    <record model="ir.ui.view" id="asterisk_sip_peer_provider_list">
-        <field name="name">asterisk sip peer providers</field>
+    <record model="ir.ui.view" id="asterisk_sip_peer_trunk_list">
+        <field name="name">asterisk sip peer trunks</field>
         <field name="model">asterisk.sip_peer</field>
         <field name="inherit_id" ref="asterisk_sip_peer_list"/>
         <field name="mode">primary</field>
@@ -15,14 +15,14 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="asterisk_sip_peer_provider_form">
-        <field name="name">asterisk sip peer provider form</field>
+    <record model="ir.ui.view" id="asterisk_sip_peer_trunk_form">
+        <field name="name">asterisk sip peer trunk form</field>
         <field name="model">asterisk.sip_peer</field>
         <field name="inherit_id" ref="asterisk_sip_peer_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
           <data>
-            <div position="after">
+            <field name="peer_type" position="after">
               <notebook>
                 <page string="Basic Settings">
                   <group>
@@ -61,30 +61,30 @@
                   </group>
                 </page>
               </notebook>
-            </div>
+            </field>
           </data>
         </field>
     </record>
 
 
-    <record model="ir.actions.act_window" id="asterisk_sip_peer_provider_action">
-        <field name="name">Providers</field>
+    <record model="ir.actions.act_window" id="asterisk_sip_peer_trunk_action">
+        <field name="name">Trunks</field>
         <field name="res_model">asterisk.sip_peer</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-          (0, 0, {'view_mode': 'tree', 'view_id': ref('asterisk_sip_peer_provider_list')}),
-          (0, 0, {'view_mode': 'form', 'view_id': ref('asterisk_sip_peer_provider_form')})]"/>
-        <field name="domain">[('peer_type', '=', 'provider')]</field>
+          (0, 0, {'view_mode': 'tree', 'view_id': ref('asterisk_sip_peer_trunk_list')}),
+          (0, 0, {'view_mode': 'form', 'view_id': ref('asterisk_sip_peer_trunk_form')})]"/>
+        <field name="domain">[('peer_type', '=', 'trunk')]</field>
         <field name="context">{
-            'default_peer_type': 'provider',
+            'default_peer_type': 'trunk',
             'default_type': 'friend',
-            'default_context': 'providers',
+            'default_context': 'trunks',
             }
         </field>
     </record>
 
-    <menuitem name="Providers" parent="asterisk_sip_peers_menu" sequence="30"
-              action="asterisk_sip_peer_provider_action" id="asterisk_sip_peer_provider_menu"/>
+    <menuitem name="Trunks" parent="asterisk_sip_peers_menu" sequence="30"
+              action="asterisk_sip_peer_trunk_action" id="asterisk_sip_peer_trunk_menu"/>
 
 
 </data></openerp>
