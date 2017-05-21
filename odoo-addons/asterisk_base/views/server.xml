@@ -76,8 +76,7 @@
                   <page string="Configuration files" attrs="{'invisible': [('write_date', '=', False)]}">
                     <group>
                       <field name="conf_files" nolabel="1"
-                          context="{'default_server': active_id,
-                                    'default_server_on_create': active_id}}"/>
+                          context="{'default_server': active_id}"/>
                     </group>
                   </page>
                     <page string="Console">

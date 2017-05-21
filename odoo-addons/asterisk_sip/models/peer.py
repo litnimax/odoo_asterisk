@@ -144,6 +144,7 @@ class SipPeer(models.Model):
     @api.multi
     def generate_sip_peers(self):
         self.ensure_one()
+        found_include = False
         sip_auto_conf = self.env['asterisk.conf'].search(['&',
             ('filename', '=', 'sip_auto_peers.conf'),
             ('server', '=', self.server.id)])
@@ -152,17 +153,16 @@ class SipPeer(models.Model):
                 'server': self.server.id,
                 'filename': 'sip_auto_peers.conf',
             })
-            # Now let see if sip.conf includes sip_auto_peers
-            sip_conf = self.env['asterisk.conf'].search(['&',
-                ('server', '=', self.server.id),
-                ('filename', '=', 'sip.conf')])
-            found_include = False
-            for line in sip_conf.content:
-                if line.find('#tryinclude sip_auto_peers.conf') != -1:
-                    found_include = True
-                    break
-            if not found_include:
-                sip_conf.content += '\n\n#tryinclude sip_auto_peers.conf\n'
+        # Now let see if sip.conf includes sip_auto_peers
+        sip_conf = self.env['asterisk.conf'].search(['&',
+            ('server', '=', self.server.id),
+            ('filename', '=', 'sip.conf')])
+        for line in sip_conf.content.split('\n'):
+            if line.find('#tryinclude sip_auto_peers.conf') != -1:
+                found_include = True
+                break
+        if not found_include:
+            sip_conf.content += '\n\n#tryinclude sip_auto_peers.conf\n'
 
         peers = []
         content = u''
@@ -179,7 +179,7 @@ class SipPeer(models.Model):
             # Cleanup fields list to have only Asterisk options
             fields_to_remove = ['create_date', 'create_uid', 'display_name',
                                 '__last_update', 'id', 'peer_type', 'server',
-                                'regseconds_human',
+                                'regseconds_human', 'peer_statuses', 'peer_status_count',
                                 'write_uid', 'write_date', 'note', 'name']
             # Sort!
             fields.sort()
@@ -194,7 +194,11 @@ class SipPeer(models.Model):
             content += '\n'
         # Save config
         sip_auto_conf.content = content
-        sip_auto_conf.sync_conf()
+        if found_include:
+            sip_auto_conf.sync_conf()
+        else:
+            sip_auto_conf.server.sync_all_conf()
+
 
 
 

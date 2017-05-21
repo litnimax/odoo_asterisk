@@ -1,6 +1,7 @@
 import humanize
 import logging
 from odoo import models, fields, api, _
+from odoo import registry, SUPERUSER_ID
 
 
 DEFAULT_SIP_PEER_STATUS_KEEP_DAYS = 7 # The number of days to keep statuses
@@ -29,7 +30,7 @@ class SipPeerStatus(models.Model):
 
 
     @api.model
-    def log_status(self, values):
+    def update_status(self, values):
         if values.get('Event') != 'PeerStatus' or values.get('ChannelType') != 'SIP':
             _logger.error('Wrong event for Asterisk SIP peer status: {}'.format(
                 values))
@@ -42,21 +43,27 @@ class SipPeerStatus(models.Model):
                 peer_name
             ))
             return False
+        # Create separate cursor for update
+        peer_id = peer.id
+        db_registry = registry(self.env.cr.dbname)
+        with api.Environment.manage(), db_registry.cursor() as cr:
+            env = api.Environment(cr, SUPERUSER_ID, {})
+            env['asterisk.sip_peer_status'].create({
+                'peer': peer_id,
+                'peer_name': peer_name,
+                'status': values.get('PeerStatus', False),
+                'cause': values.get('Cause', False),
+                'address': values.get('Address', False)
+            })
 
-        self.create({
-            'peer': peer.id,
-            'peer_name': peer_name,
-            'status': values.get('PeerStatus', False),
-            'cause': values.get('Cause', False),
-            'address': values.get('Address', False)
-        })
         return True
 
 
 
     @api.model
     def delete_expired(self, days=DEFAULT_SIP_PEER_STATUS_KEEP_DAYS):
-        records = self.search([('create_date', '<', fields.Datetime.to_string(
+        records = self.env['asterisk.sip_peer_status'].search(
+                [('create_date', '<', fields.Datetime.to_string(
             datetime.now() - timedelta(days=days)))])
         if records:
             _logger.info('Deleting {} peer statuses.'.format(len(records)))
