@@ -1,5 +1,8 @@
-# Odoo Asterisk
+# Asterisk inside Odoo - PBX & Dev plataform
 ## Project description
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M0LlN3_Wy3c/0.jpg)](https://www.youtube.com/watch?v=M0LlN3_Wy3c)
+
+
 This project is Asterisk Management system and also Asterisk development platform based on [Odoo](http://odoo.com).
 
 Currently implemented features:
@@ -10,6 +13,10 @@ Currently implemented features:
 * **Call QoS reporting** on every CDR.
 * **CEL (Channel event logging)** on every call.
 * **Call Recording** with automatic download and cleanup (embedded pbx ready).
+* **Apps**
+ * **SIP** users and trunks management, peer registration history and statistics.
+ * More to come...
+
 
 ## Project Components
 ### odoo-addons
