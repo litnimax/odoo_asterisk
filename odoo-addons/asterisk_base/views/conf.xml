@@ -31,24 +31,16 @@
                     string="Sync File" class="oe_highlight oe_read_only"/>
             </header>
               <sheet>
+                <div name="title" class="oe_title">
+                    <label for="filename" class="oe_edit_only"/>
+                    <h1><field name="filename"/> @ <field name="server" options="{'no_create': '1'}"/></h1>
+                </div>
                 <notebook>
                   <page string="Content">
-                    <group attrs="{'invisible': [('write_date', '!=', False)]}">
-                      <group>
-                        <field name="filename_on_create" string="File Name" required="1"/>
-                        <field name="server_on_create" string="Server" required="1"/>
-                      </group>
-                    </group>
-                    <group>
                       <field name="content" widget="asterisk_conf" nolabel="1"/>
-                    </group>
                   </page>
                   <page string="Information" attrs="{'invisible': [('write_date', '=', False)]}">
                     <group>
-                      <group>
-                        <field name="filename"/>
-                        <field name="server" options="{'no_create': True}"/>
-                      </group>
                       <group>
                         <field name="create_date" string="Created" readonly="1"/>
                         <field name="create_uid" string="Created By" readonly="1"/>
