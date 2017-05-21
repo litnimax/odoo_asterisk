@@ -8,7 +8,7 @@
       <field name="content">[cdr_odoo_odbc]
 connection=odoo_odbc
 table=asterisk_cdr
-usegmtime=yes
+usegmtime=no
 alias start => started
 alias end => ended
 alias answer => answered
