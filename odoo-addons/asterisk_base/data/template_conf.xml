@@ -4,9 +4,7 @@
   <data>
     <record id="asterisk_features_conf" model="asterisk.conf">
       <field name="filename">features.conf</field>
-      <field name="filename_on_create">features.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">
       </field>
     </record>

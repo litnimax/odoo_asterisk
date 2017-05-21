@@ -5,8 +5,6 @@
     <record id="asterisk_sip_conf" model="asterisk.conf">
       <field name="filename">sip.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="filename_on_create">sip.conf</field>
-      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">[general]
 
 [general]
@@ -15,13 +13,13 @@
 secret=test1
 type=friend
 host=dynamic
-context=test
+context=extensions
 
 [test2] ;Use it for testing account 2!
 secret=test2
 type=friend
 host=dynamic
-context=test
+context=extensions
 
 #tryinclude sip_custom.conf
 

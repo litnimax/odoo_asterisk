@@ -137,6 +137,9 @@ class AsteriskServer(models.Model):
 
 
     def sync_conf(self, conf, session):
+        _logger.debug('Syncing {} @ {}...'.format(
+            conf.filename,
+            conf.server.name))
         url = 'http://{}:{}/uploads'.format(self.host, self.http_port)
         response = session.post(url,
             files={'file': (conf.filename, conf.content, 'text/plain',
@@ -149,6 +152,7 @@ class AsteriskServer(models.Model):
     def sync_all_conf(self):
         self.ensure_one()
         if self.no_asterisk_mode():
+            _logger.warning('No Asterisk mode enabled, not doing anything.')
             return
         session = self.get_ajam_session()
         # Start sending config files to the server

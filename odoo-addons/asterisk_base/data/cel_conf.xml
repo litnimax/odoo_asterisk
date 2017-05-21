@@ -4,9 +4,7 @@
   <data>
     <record id="asterisk_cel_conf" model="asterisk.conf">
       <field name="filename">cel.conf</field>
-      <field name="filename_on_create">cel.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">[general]
 enable=yes
 apps=all

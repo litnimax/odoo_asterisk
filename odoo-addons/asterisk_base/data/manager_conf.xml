@@ -5,8 +5,6 @@
     <record id="asterisk_manager_conf" model="asterisk.conf">
       <field name="filename">manager.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="filename_on_create">manager.conf</field>
-      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">[general]
 enabled = yes
 webenabled = yes

@@ -5,8 +5,6 @@
     <record id="asterisk_extensions_custom_conf" model="asterisk.conf">
       <field name="filename">extensions_custom.conf</field>
       <field name="server" ref="asterisk_test_server"/>
-      <field name="filename_on_create">extensions_custom.conf</field>
-      <field name="server_on_create" ref="asterisk_test_server"/>
       <field name="content">;
       </field>
     </record>
