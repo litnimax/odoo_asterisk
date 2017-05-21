@@ -164,3 +164,8 @@ class AsteriskServer(models.Model):
 
         # Finally reload Asterisk
         self.asterisk_reload()
+
+
+    def reload_ami_broker(self):
+        self.ensure_one()
+        self.env['bus.bus'].sendone('ami_broker', 'reload');

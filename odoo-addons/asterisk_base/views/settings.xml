@@ -12,6 +12,8 @@
         <group string="Asterisk Settings">
           <group>
             <field name="no_asterisk"/>
+            <button type="object" name="reload_ami_broker"
+                    string="Reload AMI Broker"/>                                                                 
           </group>
         </group>
       </form>

@@ -94,7 +94,7 @@ class Cdr(models.Model):
 
 
     @api.model
-    def log_qos(self, values):
+    def update_qos(self, values):
         _logger.debug(values)
         uniqueid = values.get('uniqueid')
         linkedid = values.get('linkedid')

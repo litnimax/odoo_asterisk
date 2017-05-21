@@ -23,3 +23,8 @@ class AsteriskBaseSettings(models.TransientModel):
         res['no_asterisk'] = self.env['ir.config_parameter'].get_param(
                                         'asterisk_base.no_asterisk', '').strip()
         return res
+
+
+    def reload_ami_broker(self):
+        self.ensure_one()
+        self.env['bus.bus'].sendone('ami_broker', 'reload');

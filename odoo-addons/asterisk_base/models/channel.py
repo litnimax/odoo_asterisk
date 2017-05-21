@@ -29,7 +29,7 @@ class Channel(models.Model):
 
     @api.model
     def new_channel(self, values):
-        self.create({
+        self.env['asterisk.channel'].create({
             'channel': values.get('Channel'),
             'uniqueid': values.get('Uniqueid'),
             'context': values.get('Context'),
@@ -50,8 +50,8 @@ class Channel(models.Model):
 
 
     @api.model
-    def new_channel_state(self, values):
-        channel = self.search([
+    def update_channel_state(self, values):
+        channel = self.env['asterisk.channel'].search([
             ('uniqueid', '=', values.get('Uniqueid'))])
         if channel:
             channel.write({
@@ -81,7 +81,7 @@ class Channel(models.Model):
     def hangup_channel(self, values):
         uniqueid = values.get('Uniqueid')
         channel = values.get('Channel')
-        found = self.search([('uniqueid', '=', uniqueid)])
+        found = self.env['asterisk.channel'].search([('uniqueid', '=', uniqueid)])
         if found:
             _logger.debug('Found channel {}'.format(channel))
             found.unlink()

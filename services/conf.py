@@ -8,12 +8,14 @@ _logger = logging.getLogger(__name__)
 
 ODOO_HOST = 'localhost'
 ODOO_PORT = 9069
+ODOO_POLLING_PORT = 8072
 ODOO_DB = 'odoo10_asterisk'
 ODOO_USER = 'admin'
 ODOO_PASSWORD = 'admin'
 ODOO_RECONNECT_TIMEOUT = 3 # Second
 ARI_RECONNECT_TIMEOUT = 3
-
+AMI_RECONNECT_TIMEOUT = 3
+AMI_RELOAD_PAUSE = 2 # 2 seconds between AMI connection reload
 
 ASTERISK_HELPER_URL = 'http://localhost:8010'
 
