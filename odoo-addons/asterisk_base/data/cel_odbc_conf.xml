@@ -8,7 +8,7 @@
       <field name="content">[cel_odoo_odbc]
 connection=odoo_odbc
 table=asterisk_cel
-usegmtime=yes
+usegmtime=no
       </field>
     </record>
   </data>
