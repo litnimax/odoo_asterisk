@@ -12,7 +12,8 @@ congestion = yes
 endbeforehexten = yes
 
 [csv]
-usegmtime=yes
+usegmtime=no
+newcdrcolumns=yes
 loguniqueid=yes
 loguserfield=yes
 newcdrcolumns=yes
