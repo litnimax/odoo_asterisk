@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="OriginateCallFieldChar">
+      <div t-if="widget.get('effective_readonly')">
+        <span class="originate_call"/>
+        <button class="originate_call_button">Call</button>
+      </div>
+
+      <input t-if="!widget.get('effective_readonly')" class="o_form_input"
+          t-att-barcode_events="widget.options.barcode_events"
+          t-att-type="widget.password ? 'password' : 'text'"
+          t-att-id="widget.id_for_label"
+          t-att-tabindex="widget.node.attrs.tabindex"
+          t-att-autofocus="widget.node.attrs.autofocus"
+          t-att-placeholder="widget.node.attrs.placeholder"
+          t-att-autocomplete="widget.password ? 'new-password' : widget.node.attrs.autocomplete"
+          t-att-maxlength="widget.field.size"/>
+  </t>
+</templates>

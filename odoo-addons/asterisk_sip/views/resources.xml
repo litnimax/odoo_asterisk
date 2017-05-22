@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <template id="asterisk_sip_assets_backend" name="asterisk_sip assets" inherit_id="web.assets_backend">
+    <xpath expr="." position="inside">
+      <script type="text/javascript" src="/asterisk_sip/static/src/js/originate_call.js"/>
+    </xpath>
+  </template>
+
+</odoo>

@@ -16,7 +16,7 @@
         'views/conf.xml',
         'views/server.xml',
         'views/channel.xml',
-        'views/settings.xml',
+        'views/settings.xml',        
         # Data files
         'data/server.xml', # Must be the first data view to import.
         'data/ari_conf.xml',

@@ -1,6 +1,8 @@
 # Patch all before importing other modules!
 import gevent
 from gevent.monkey import  patch_all; patch_all()
+from gevent.queue import Queue
+from Queue import Empty
 
 import base64
 import json
@@ -43,6 +45,84 @@ def get_odoo_connection():
 
 
 class ServerAmiManager(object):
+    #cmd_Q = Queue()
+
+    def __init__(self, server_id, host, port, username, password):
+        self.server_id = server_id
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        # Start the command Q
+        # Populate events
+        self.events = Asterisk.Util.EventCollection()
+        self.events.subscribe('VarSet', self.handle_event)
+        self.events.subscribe('Hangup', self.handle_event)
+        self.events.subscribe('PeerStatus', self.handle_event)
+        self.events.subscribe('Newchannel', self.handle_event)
+        self.events.subscribe('NewExten', self.handle_event)
+        self.events.subscribe('NewConnectedLine', self.handle_event)
+        self.events.subscribe('Newstate', self.handle_event)
+
+
+    def register(self, pbx):
+        pbx.events += self.events
+
+
+    def unregister(self, pbx):
+        pbx.events -= self.events
+
+
+    def handle_event(self, pbx, event):
+        # General method to spawn event handlres.
+        # Search for method named on_EventName
+        event_handler = getattr(self, 'on_{}'.format(event.get('Event')), None)
+        if event_handler:
+            gevent.spawn(event_handler, pbx, event)
+
+    """
+    def handle_cmd_Q(self):
+        while True:
+            try:
+                msg = self.cmd_Q.get_nowait()
+            except Empty:
+                gevent.sleep(1)
+                continue
+            command = msg.get('command')
+            method = getattr(self, 'command_' + command, None)
+            if method:
+                _logger.debug('Q got {}'.format(method))
+                method(msg)
+            else:
+                _logger.error('Method {} not found.'.format(command))
+            gevent.sleep(1)
+    """
+
+
+    def loop(self):
+        while True:
+            try:
+                # Create PBX connection
+                self.pbx = Manager((self.host, int(self.port)),
+                                   self.username, self.password)
+                _logger.info('Connected to {}'.format(self.host))
+                self.register(self.pbx)
+                self.pbx.serve_forever()
+            except socket.error as e:
+                _logger.error('Server {} socket error: {}.'.format(
+                    self.host, e.strerror))
+            except Asterisk.BaseException as e:
+                _logger.error('Server {} error, {}.'.format(
+                    self.host, e))
+            except ConnectionError as e:
+                _logger.error('Server {} connection error, {}.'.format(
+                    self.host, e))
+            except:
+                raise
+            _logger.info(
+                'Reconnecting in {} seconds...'.format(AMI_RECONNECT_TIMEOUT))
+            gevent.sleep(AMI_RECONNECT_TIMEOUT)
+
 
     def update_qos(self, pbx, event):
         # We have to give CDR some time to get into the database.
@@ -135,7 +215,6 @@ class ServerAmiManager(object):
 
     def on_PeerStatus(self, pbx, event):
         _logger.debug('on_{}'.format(event.get('Event')))
-        print event
         if event.get('ChannelType') == 'SIP':
             # We only care about SIP registrations
             return odoo.env['asterisk.sip_peer_status'].update_status(event)
@@ -162,63 +241,6 @@ class ServerAmiManager(object):
         return self.update_channel_state(pbx, event)
 
 
-    def __init__(self, host, port, username, password):
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        # Populate events
-        self.events = Asterisk.Util.EventCollection()
-        self.events.subscribe('VarSet', self.handle_event)
-        self.events.subscribe('Hangup', self.handle_event)
-        self.events.subscribe('PeerStatus', self.handle_event)
-        self.events.subscribe('Newchannel', self.handle_event)
-        self.events.subscribe('NewExten', self.handle_event)
-        self.events.subscribe('NewConnectedLine', self.handle_event)
-        self.events.subscribe('Newstate', self.handle_event)
-
-
-    def register(self, pbx):
-        pbx.events += self.events
-
-
-    def unregister(self, pbx):
-        pbx.events -= self.events
-
-
-    def handle_event(self, pbx, event):
-        # General method to spawn event handlres.
-        # Search for method named on_EventName
-        event_handler = getattr(self, 'on_{}'.format(event.get('Event')), None)
-        if event_handler:
-            gevent.spawn(event_handler, pbx, event)
-
-
-    def loop(self):
-        while True:
-            try:
-                # Create PBX connection
-                self.pbx = Manager((self.host, int(self.port)),
-                                   self.username, self.password)
-                _logger.info('Connected to {}'.format(self.host))
-                self.register(self.pbx)
-                self.pbx.serve_forever()
-            except socket.error as e:
-                _logger.error('Server {} socket error: {}.'.format(
-                    self.host, e.strerror))
-            except Asterisk.BaseException as e:
-                _logger.error('Server {} error, {}.'.format(
-                    self.host, e))
-            except ConnectionError as e:
-                _logger.error('Server {} connection error, {}.'.format(
-                    self.host, e))
-            except:
-                raise
-            _logger.info(
-                'Reconnecting in {} seconds...'.format(AMI_RECONNECT_TIMEOUT))
-            gevent.sleep(AMI_RECONNECT_TIMEOUT)
-
-
 
 def poll_message_bus():
     _logger.info('Starting bus poller.')
@@ -227,39 +249,73 @@ def poll_message_bus():
     odoo.env['bus.bus'].unlink(rec_ids)
     msg_id = 0
     while True:
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        url = 'http://{}:{}/longpolling/poll'.format(ODOO_HOST, ODOO_POLLING_PORT)
-        r = requests.get(url, stream=True, headers=headers, json={
-            'params': {
-                'channels': ['ami_broker'],
-                'last': msg_id
-            }
-        })
-        for line in r.iter_lines():
-            if line:
-                decoded_line = json.loads(line.decode('utf-8'))
-                result_list = decoded_line.get('result')
-                for result in result_list:
-                    msg = result.get('message')
-                    msg_id = result.get('id')
-                    channel = result.get('channel')
-                    _logger.debug(
-                        'Message bus channel {}, message {}, id {}.'.format(
-                            channel, msg, msg_id))
-                    if msg == 'reload':
-                        _logger.info('Reloading broker.')
-                        for h in greenlet_handles:
-                            h.kill()
-                        gevent.sleep(AMI_RELOAD_PAUSE)
-                        gevent.spawn(spawn_server_ami_managers)
-        continue
+        try:
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            url = 'http://{}:{}/longpolling/poll'.format(ODOO_HOST, ODOO_POLLING_PORT)
+            r = requests.get(url, stream=True, headers=headers, json={
+                'params': {
+                    'channels': ['ami_broker'],
+                    'last': msg_id
+                }
+            })
+            for line in r.iter_lines():
+                if line:
+                    decoded_line = json.loads(line.decode('utf-8'))
+                    result_list = decoded_line.get('result')
+                    for result in result_list:
+                        msg_id = result.get('id')
+                        channel = result.get('channel')
+                        _logger.debug(
+                            'Message bus channel {}, message {}, id {}.'.format(
+                                channel, result.get('message'), msg_id))
+                        try:
+                            msg = json.loads(result.get('message'))
+                        except ValueError:
+                            _logger.error('Bad message received: {}'.format(
+                                result.get('message')
+                            ))
+                            continue
+                        command = msg.get('command')
+                        if command == 'reload':
+                            _logger.info('Reloading broker.')
+                            for h in greenlet_handles:
+                                h.kill()
+                            gevent.sleep(AMI_RELOAD_PAUSE)
+                            gevent.spawn(spawn_server_ami_managers)
+
+                        elif command in ['originate']:
+                            # Try to find a server to originate
+                            for manager in server_ami_managers:
+                                if manager.server_id == msg.get('server_id'):
+                                    _logger.debug('Using server id {}..'.format(
+                                        manager.server_id
+                                    ))
+                                    pbx = Manager((manager.host, int(manager.port)),
+                                                  manager.username, manager.password)
+                                    pbx.Originate(channel=msg.get('sip_peer'),
+                                        application='Echo')
+                                    pbx.Logoff()
+
+
+                        else:
+                            _logger.error(
+                                'Uknown message received from the bus: {}'.format(
+                                    msg
+                                ))
+            continue
+
+        except ConnectionError as e:
+            _logger.error('Poll message bus error: {}'.format(e))
+            gevent.sleep(POLL_RECONNECT_TIMEOUT)
+            continue
+
 
 
 def spawn_server_ami_managers():
     servers = odoo.env['asterisk.server'].search([])
     for server_id in servers:
         server = odoo.env['asterisk.server'].browse(server_id)[0]
-        manager = ServerAmiManager(server.host, server.ami_port,
+        manager = ServerAmiManager(server.id, server.host, server.ami_port,
                                server.ami_username, server.ami_password)
         server_ami_managers.append(manager)
         try:

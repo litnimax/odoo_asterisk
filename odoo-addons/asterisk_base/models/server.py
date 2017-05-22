@@ -1,4 +1,5 @@
 from collections import defaultdict
+import json
 import logging
 import requests
 from xml.etree import cElementTree as ET
@@ -166,6 +167,17 @@ class AsteriskServer(models.Model):
         self.asterisk_reload()
 
 
-    def reload_ami_broker(self):
+
+    @api.multi
+    def originate_call(self, sip_peer, number):
         self.ensure_one()
-        self.env['bus.bus'].sendone('ami_broker', 'reload');
+        _logger.debug('Originate call to {} for {}.'.format(number, sip_peer))
+        self.env['bus.bus'].sendone(
+            'ami_broker',
+            json.dumps({
+                'command': 'originate',
+                'server_id': self.id,
+                'sip_peer': 'SIP/' + sip_peer,
+                'number': number
+            })
+        )

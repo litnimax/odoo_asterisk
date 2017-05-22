@@ -122,25 +122,6 @@ class SipPeer(models.Model):
         cr.close()
 
 
-    """
-    @api.multi
-    def prune(self):
-        for rec in self:
-            logger.debug('Pruning peer {}'.format(self.name))
-            try:
-                url = self.env['ir.config_parameter'].get_param('asterisk_http_server_url')
-                path = '/command'
-                r = requests.post(urljoin(url, path),
-                                  headers={'Content-Type': 'application/json'},
-                                  timeout=5,
-                                  data=json.dumps(
-                                      {'command': 'sip prune realtime {}'.format(
-                                          rec.name)}))
-            except Exception as e:
-                logger.error('Could not prune sip peer: %s' % e)
-
-    """
-
     @api.multi
     def generate_sip_peers(self):
         self.ensure_one()
@@ -198,9 +179,6 @@ class SipPeer(models.Model):
             sip_auto_conf.sync_conf()
         else:
             sip_auto_conf.server.sync_all_conf()
-
-
-
 
 
     @api.multi

@@ -1,3 +1,4 @@
+import json
 from odoo import api, fields, models, _
 
 
@@ -27,4 +28,5 @@ class AsteriskBaseSettings(models.TransientModel):
 
     def reload_ami_broker(self):
         self.ensure_one()
-        self.env['bus.bus'].sendone('ami_broker', 'reload');
+        self.env['bus.bus'].sendone('ami_broker',
+                                    json.dumps({'command': 'reload'}));

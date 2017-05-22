@@ -15,5 +15,11 @@
         'views/common_views.xml',
         'views/user.xml',
         'views/trunk.xml',
+        'views/res_users.xml',
+        'views/res_partner.xml',
+        'views/resources.xml',
+    ],
+    'qweb': [
+        'static/src/xml/*.xml'
     ],
 }
