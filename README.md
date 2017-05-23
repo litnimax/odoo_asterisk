@@ -1,4 +1,4 @@
-# Asterisk inside Odoo - PBX & Dev plataform
+# Asterisk inside Odoo - PBX & Dev platform
 ## Project description
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M0LlN3_Wy3c/0.jpg)](https://www.youtube.com/watch?v=M0LlN3_Wy3c)
 
