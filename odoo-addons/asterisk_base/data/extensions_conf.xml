@@ -28,7 +28,7 @@ exten => stasis-error,n,Playback(error-has-occured)
 exten => stasis-error,n,Hangup
 
 
-[extensions]
+[users]
 include => stasis-error
 exten => 100,1,Wait(1)
 exten => 100,n,Ringing
