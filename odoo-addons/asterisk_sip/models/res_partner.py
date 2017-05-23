@@ -11,6 +11,6 @@ class ResPartner(models.Model):
         user = self.env['res.users'].browse([self.env.uid])[0]
         if user.sip_peer:
             user.sip_peer.server.originate_call(
-                user.sip_peer.name, number)
+                user.sip_peer, number)
         else:
-            raise UserError('You don\'t have a SIP peer to make a call!')        
+            raise UserError('You don\'t have a SIP peer to make a call!')

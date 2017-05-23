@@ -72,7 +72,7 @@ def connect_to_context(channel, event):
 
 def originate(endpoint='', number='', context='default', app='', appArgs='',
               variables={}, callerid='', timeout=ARI_ORIGINATE_TIMEOUT,
-              from_number='', no_simult=False):
+              from_number='100', no_simult=False):
     # Check that there is no call in progress
     _logger.info('Originate to : %s' % endpoint)
     evt = Event()  # Wait flag for origination
@@ -390,6 +390,7 @@ def poll_message_bus():
                             """
                             res = originate(endpoint=msg.get('sip_peer'),
                                 number=msg.get('number'),
+                                callerid=msg.get('callerid'),
                                 app='odoo', appArgs='connect_to_context',
                                 context=msg.get('context'))
 
