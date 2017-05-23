@@ -1,4 +1,8 @@
-# Asterisk inside Odoo - PBX & Dev plataform
+# Asterisk inside Odoo - PBX & Dev platform
+Imagine all Asterisk PBX features covered around by Odoo.
+
+Static or RealTime, scaling from Embedded PBX to unlimited number of servers in the cloud with central management.
+
 ## Project description
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M0LlN3_Wy3c/0.jpg)](https://www.youtube.com/watch?v=M0LlN3_Wy3c)
 
