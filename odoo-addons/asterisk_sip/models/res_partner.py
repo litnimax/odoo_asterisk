@@ -13,4 +13,4 @@ class ResPartner(models.Model):
             user.sip_peer.server.originate_call(
                 user.sip_peer.name, number)
         else:
-            raise UserError('You don\'t have a SIP peer to make a call!')
+            raise UserError('You don\'t have a SIP peer to make a call!')        

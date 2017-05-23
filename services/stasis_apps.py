@@ -4,11 +4,15 @@
 # Patch all before other imports!
 import gevent
 from gevent.monkey import patch_all; patch_all()
+from gevent.event import Event
 
 import ari
+import json
 import logging
 import logging.config
 import odoorpc
+import requests
+import time
 from requests.exceptions import HTTPError, ReadTimeout, ConnectionError
 import setproctitle
 import socket
@@ -19,6 +23,7 @@ from websocket import WebSocketConnectionClosedException
 STASIS_APP = 'odoo'
 
 odoo = None # Global instance of odoo connection shared by all greenlets.
+ari_client = None # Global instance of ARI client
 
 # Import default cpnfiguration.
 from conf import *
@@ -43,6 +48,119 @@ def continue_dialplan(channel, event,
         # Ignore 404's, since channels can go away before we get to them
         if e.response.status_code != requests.codes.not_found:
             raise
+
+
+def connect_to_context(channel, event):
+    try:
+        result = channel.getChannelVar(variable='CONNECT_TO_CONTEXT')
+        context_exten = result.get('value')
+        if context_exten:
+            _logger.debug('ari_app_connect_to_context, redirect to %s'
+                                                            % context_exten)
+            extension, context = context_exten.split('@')
+            channel.continueInDialplan(context=context, extension=extension, priority=1)
+        else:
+            _logger.error('ari_app_connect_to_context, no exten@context passed!')
+
+
+    except HTTPError as e:
+        if e.response.status_code == requests.status_codes.codes.not_found:
+            _logger.warning('Channel not found!')
+    except Exception as e:
+        _logger.error('Error: %s' % e)
+
+
+def originate(endpoint='', number='', context='default', app='', appArgs='',
+              variables={}, callerid='', timeout=ARI_ORIGINATE_TIMEOUT,
+              from_number='', no_simult=False):
+    # Check that there is no call in progress
+    _logger.info('Originate to : %s' % endpoint)
+    evt = Event()  # Wait flag for origination
+    result = {}
+    try:
+        """
+        if no_simult and asterisk.get_channel_by_to_from(client=ari_client,
+                                          to_number=number, from_number=from_number):
+            logger.warning('Active call to %s found, will not originate!' % number)
+            result['status'] = 'error'
+            result['message'] = 'Active call found'
+            return result
+        """
+        # Sanitarize variables
+        for k,v in variables.items():
+            if not v:
+                _logger.warning('Popping empty variable {}'.format(k))
+                variables.pop(k)
+
+        variables.update({
+            'TO_NUMBER': number or '',
+            'FROM_NUMBER': from_number or '',
+            'CONNECT_TO_CONTEXT': '{}@{}'.format(number, context)
+        })
+
+        start_time = time.time()
+        channel = ari_client.channels.originate(
+            endpoint=endpoint,
+            app=STASIS_APP,
+            appArgs=appArgs,
+            callerId=callerid,
+            timeout=timeout,
+            variables={'variables': variables},
+        )
+
+        def destroyed(channel, event):
+            state = event['channel']['state']
+            try:
+                cause = str(event.get('cause', 'No cause code'))
+                cause_txt = event.get('cause_txt', 'No cause txt')
+                stop_time = time.time()
+                duration = stop_time - start_time
+
+                if state == 'Up' and cause in ['16']:
+                        # Only these consider successful
+                        result['status'] = 'success'
+                        result['message'] = '%s (%s) (%s)' % (cause_txt, state, cause)
+                elif state == 'Ringing' and cause in ['16']:
+                        result['status'] = 'error'
+                        if abs(duration - float(conf['pbx_originate_timeout'])) <= 1:
+                                result['message'] = 'Call Timeout (Ringing)'
+                        else:
+                                result['message'] = 'Call Interrupt (Ringing)'
+                else:
+                    result['status'] = 'error'
+                    result['message'] = '%s (%s) (%s)' % (cause_txt, state, cause)
+
+
+            except Exception as e:
+                result['status'] = 'error'
+                result['message'] = e.message
+                _logger.exception('Error on destroyed!')
+
+            finally:
+                evt.set()
+
+        channel.on_event('ChannelDestroyed', destroyed)
+        # Wait until we get origination result
+        evt.wait()
+
+    except HTTPError as e:
+        result['status'] = 'error'
+        try:
+            error = e.response.json().get('error', '')
+            result['message'] = error + ' ' + e.response.json().get('message', '')
+
+        except Exception:
+            result['message'] = e.response.content
+
+    except Exception as e:
+        _logger.exception('Originate ATI error!')
+        result['status'] = 'error'
+        result['message'] = e.message
+
+    finally:
+        _logger.debug('Call to %s status: %s (%s).' % (endpoint,
+            result['status'], result['message']))
+        return result
 
 
 
@@ -119,6 +237,10 @@ def on_stasis_start(channel_dict, event):
             _logger.info('Set callerid for {}.'.format(caller))
             gevent.spawn(set_callerid, channel, event)
             return
+        elif 'connect_to_context' in app_args:
+            _logger.info('Connecting {} to exten {}.'.format(caller, called))
+            return gevent.spawn(connect_to_context, channel, event)
+
 
         # Nothing found, just exit to dialplan
         _logger.error('Stasis args not found!')
@@ -133,7 +255,7 @@ def on_stasis_start(channel_dict, event):
                     app, app_args, channel_id, called, caller))
 
     except Exception as e:
-        _logger.exception('Unhandled error:')
+        _logger.error('Unhandled error: {}'.format(e))
         continue_dialplan(channel, event, extension='stasis-error')
 
 
@@ -167,6 +289,7 @@ def connect_ari(conf):
 
 def always_connect_ari(conf):
     while True:
+        global ari_client
         ari_client = connect_ari(conf)
         if ari_client:
             try:
@@ -205,14 +328,101 @@ def get_odoo_connection():
                 raise
 
 
+def poll_message_bus():
+    _logger.info('Starting bus poller.')
+    # Clear message history
+    rec_ids = odoo.env['bus.bus'].search([('channel', '=', '"stasis_apps"')])
+    odoo.env['bus.bus'].unlink(rec_ids)
+    msg_id = 0
+    while True:
+        try:
+            headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            url = 'http://{}:{}/longpolling/poll'.format(ODOO_HOST, ODOO_POLLING_PORT)
+            r = requests.get(url, stream=True, headers=headers, json={
+                'params': {
+                    'channels': ['stasis_apps'],
+                    'last': msg_id
+                }
+            })
+            for line in r.iter_lines():
+                if line:
+                    decoded_line = json.loads(line.decode('utf-8'))
+                    result_list = decoded_line.get('result')
+                    for result in result_list:
+                        msg_id = result.get('id')
+                        channel = result.get('channel')
+                        _logger.debug(
+                            'Message bus channel {}, message {}, id {}.'.format(
+                                channel, result.get('message'), msg_id))
+                        try:
+                            msg = json.loads(result.get('message'))
+
+                        except ValueError:
+                            _logger.error('Bad message received: {}'.format(
+                                result.get('message')
+                            ))
+                            continue
+                        command = msg.get('command')
+                        if command == 'reload':
+                            # TODO
+                            _logger.info('Reloading broker.')
+                            #for h in greenlet_handles:
+                            #    h.kill()
+                            #gevent.sleep(AMI_RELOAD_PAUSE)
+                            #gevent.spawn(spawn_server_ami_managers)
+
+                        elif command in ['originate']:
+                            """ Message like: {
+                                'command': 'originate',
+                                'server_id': 1
+                                'sip_peer': 'SIP/test1',
+                                'number': '1234567890',
+                                'user_id': 1
+                            }
+                            """
+                            # Try to find a server to originate
+                            """
+                            for manager in server_ami_managers:
+                                if manager.server_id == msg.get('server_id'):
+                                    _logger.debug('Using server id {}..'.format(
+                                        manager.server_id
+                                    ))
+                            """
+                            res = originate(endpoint=msg.get('sip_peer'),
+                                number=msg.get('number'),
+                                app='odoo', appArgs='connect_to_context',
+                                context=msg.get('context'))
+
+                            user = odoo.env['res.users'].browse([msg.get('user_id')])
+                            if user:
+                                user.notify_info('Status: {} ({})'.format(
+                                    res.get('status'),
+                                    res.get('message')))
+
+                        else:
+                            _logger.error(
+                                'Uknown message received from the bus: {}'.format(
+                                    msg
+                                ))
+            continue
+
+        except ConnectionError as e:
+            _logger.error('Poll message bus error: {}'.format(e))
+            gevent.sleep(POLL_RECONNECT_TIMEOUT)
+            continue
+
+
+
+
 def start():
     _logger.info('Stasis app {} has been started.'.format(STASIS_APP))
     setproctitle.setproctitle('stasis_{}'.format(STASIS_APP))
     global odoo
     odoo = get_odoo_connection()
     ari_handle = gevent.spawn(always_connect_ari, conf)
+    bus_poller_handle = gevent.spawn(poll_message_bus)
     try:
-        gevent.joinall([ari_handle])
+        gevent.joinall([bus_poller_handle, ari_handle])
     except (KeyboardInterrupt, SystemExit):
         _logger.info('Terminating.')
 

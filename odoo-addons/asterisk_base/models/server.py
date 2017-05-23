@@ -173,11 +173,13 @@ class AsteriskServer(models.Model):
         self.ensure_one()
         _logger.debug('Originate call to {} for {}.'.format(number, sip_peer))
         self.env['bus.bus'].sendone(
-            'ami_broker',
+            'stasis_apps',
             json.dumps({
                 'command': 'originate',
                 'server_id': self.id,
                 'sip_peer': 'SIP/' + sip_peer,
-                'number': number
+                'number': number,
+                'context': 'users',
+                'user_id': self.env.user.id,
             })
         )

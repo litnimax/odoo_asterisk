@@ -4,7 +4,10 @@
   <t t-name="OriginateCallFieldChar">
       <div t-if="widget.get('effective_readonly')">
         <span class="originate_call"/>
-        <button class="originate_call_button">Call</button>
+        <button type="button" class="btn btn-sm originate_call_button">
+          <div class="fa fa-fw fa-phone o_button_icon"/>
+          <span/>
+        </button>
       </div>
 
       <input t-if="!widget.get('effective_readonly')" class="o_form_input"

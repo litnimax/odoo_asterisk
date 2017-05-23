@@ -9,8 +9,11 @@
         <field name="phone" position="attributes">
           <attribute name="widget">originate_call</attribute>
         </field>
+        <field name="mobile" position="attributes">
+          <attribute name="widget">originate_call</attribute>
+        </field>
+
     </field>
 </record>
-
 
 </odoo>

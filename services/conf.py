@@ -14,6 +14,7 @@ ODOO_USER = 'admin'
 ODOO_PASSWORD = 'admin'
 ODOO_RECONNECT_TIMEOUT = 3 # Second
 ARI_RECONNECT_TIMEOUT = 3
+ARI_ORIGINATE_TIMEOUT = 120 # 120 seconds for channel originate
 AMI_RECONNECT_TIMEOUT = 3
 POLL_RECONNECT_TIMEOUT = 5
 AMI_RELOAD_PAUSE = 2 # 2 seconds between AMI connection reload

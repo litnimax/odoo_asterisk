@@ -283,20 +283,6 @@ def poll_message_bus():
                             gevent.sleep(AMI_RELOAD_PAUSE)
                             gevent.spawn(spawn_server_ami_managers)
 
-                        elif command in ['originate']:
-                            # Try to find a server to originate
-                            for manager in server_ami_managers:
-                                if manager.server_id == msg.get('server_id'):
-                                    _logger.debug('Using server id {}..'.format(
-                                        manager.server_id
-                                    ))
-                                    pbx = Manager((manager.host, int(manager.port)),
-                                                  manager.username, manager.password)
-                                    pbx.Originate(channel=msg.get('sip_peer'),
-                                        application='Echo')
-                                    pbx.Logoff()
-
-
                         else:
                             _logger.error(
                                 'Uknown message received from the bus: {}'.format(
