@@ -177,8 +177,8 @@ class AsteriskServer(models.Model):
             json.dumps({
                 'command': 'originate',
                 'server_id': self.id,
-                'sip_peer': 'SIP/' + sip_peer.name,
-                'number': number,
+                'endpoint': 'SIP/' + sip_peer.name,
+                'exten': number,
                 'callerid': sip_peer.callerid,
                 'context': 'users',
                 'user_id': self.env.user.id,

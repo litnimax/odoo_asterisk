@@ -62,7 +62,6 @@ def connect_to_context(channel, event):
         else:
             _logger.error('ari_app_connect_to_context, no exten@context passed!')
 
-
     except HTTPError as e:
         if e.response.status_code == requests.status_codes.codes.not_found:
             _logger.warning('Channel not found!')
@@ -70,39 +69,33 @@ def connect_to_context(channel, event):
         _logger.error('Error: %s' % e)
 
 
-def originate(endpoint='', number='', context='default', app='', appArgs='',
-              variables={}, callerid='', timeout=ARI_ORIGINATE_TIMEOUT,
-              from_number='100', no_simult=False):
+def originate(**kwargs):
     # Check that there is no call in progress
-    _logger.info('Originate to : %s' % endpoint)
+    endpoint=kwargs.get('endpoint')
+    context=kwargs.get('context', 'default')
+    exten=kwargs.get('exten', 's')
+    priority=kwargs.get('priority', 1)
+    callerid=kwargs.get('callerid', '')
+    variables=kwargs.get('variables', {})
+    timeout=kwargs.get('timeout', ARI_ORIGINATE_TIMEOUT)
+    _logger.info('Originate {} from {} to {}@{},{}'.format(
+        endpoint, callerid, exten, context, priority))
     evt = Event()  # Wait flag for origination
     result = {}
     try:
-        """
-        if no_simult and asterisk.get_channel_by_to_from(client=ari_client,
-                                          to_number=number, from_number=from_number):
-            logger.warning('Active call to %s found, will not originate!' % number)
-            result['status'] = 'error'
-            result['message'] = 'Active call found'
-            return result
-        """
         # Sanitarize variables
         for k,v in variables.items():
             if not v:
                 _logger.warning('Popping empty variable {}'.format(k))
                 variables.pop(k)
 
-        variables.update({
-            'TO_NUMBER': number or '',
-            'FROM_NUMBER': from_number or '',
-            'CONNECT_TO_CONTEXT': '{}@{}'.format(number, context)
-        })
-
         start_time = time.time()
+        variables.update({
+            'CONNECT_TO_CONTEXT': '{}@{}'.format(exten, context)})
         channel = ari_client.channels.originate(
             endpoint=endpoint,
             app=STASIS_APP,
-            appArgs=appArgs,
+            appArgs='connect_to_context',
             callerId=callerid,
             timeout=timeout,
             variables={'variables': variables},
@@ -114,7 +107,7 @@ def originate(endpoint='', number='', context='default', app='', appArgs='',
                 cause = str(event.get('cause', 'No cause code'))
                 cause_txt = event.get('cause_txt', 'No cause txt')
                 stop_time = time.time()
-                duration = stop_time - start_time
+                result['duration'] = '%0.2f' % (stop_time - start_time)
 
                 if state == 'Up' and cause in ['16']:
                         # Only these consider successful
@@ -153,7 +146,7 @@ def originate(endpoint='', number='', context='default', app='', appArgs='',
             result['message'] = e.response.content
 
     except Exception as e:
-        _logger.exception('Originate ATI error!')
+        _logger.exception('Originate ARI error!')
         result['status'] = 'error'
         result['message'] = e.message
 
@@ -372,14 +365,6 @@ def poll_message_bus():
                             #gevent.spawn(spawn_server_ami_managers)
 
                         elif command in ['originate']:
-                            """ Message like: {
-                                'command': 'originate',
-                                'server_id': 1
-                                'sip_peer': 'SIP/test1',
-                                'number': '1234567890',
-                                'user_id': 1
-                            }
-                            """
                             # Try to find a server to originate
                             """
                             for manager in server_ami_managers:
@@ -388,11 +373,7 @@ def poll_message_bus():
                                         manager.server_id
                                     ))
                             """
-                            res = originate(endpoint=msg.get('sip_peer'),
-                                number=msg.get('number'),
-                                callerid=msg.get('callerid'),
-                                app='odoo', appArgs='connect_to_context',
-                                context=msg.get('context'))
+                            res = originate(**msg)
 
                             user = odoo.env['res.users'].browse([msg.get('user_id')])
                             if user:
