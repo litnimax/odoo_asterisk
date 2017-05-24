@@ -70,7 +70,8 @@ def connect_to_context(channel, event):
 
 
 def originate(**kwargs):
-    # Check that there is no call in progress
+    if not ari_client:
+        return {'status': 'error', 'message': 'ARI not connected'}
     endpoint=kwargs.get('endpoint')
     context=kwargs.get('context', 'default')
     exten=kwargs.get('exten', 's')
