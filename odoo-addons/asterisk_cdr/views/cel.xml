@@ -105,7 +105,5 @@
             </field>
         </record>
 
-        <function name="grant_asterisk_access" model="asterisk.cel"/>
-
     </data>
 </odoo>

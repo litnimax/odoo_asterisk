@@ -83,9 +83,5 @@
         </field>
     </record>
 
-    <function name="grant_asterisk_access" model="asterisk.sip_peer"/>
-    <function name="grant_asterisk_access" model="asterisk.conf.extensions"/>
-    <function name="grant_asterisk_access" model="asterisk.context"/>
-
 
 </data></openerp>

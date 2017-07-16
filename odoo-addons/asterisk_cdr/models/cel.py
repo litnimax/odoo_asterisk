@@ -61,14 +61,3 @@ class Cel(models.Model):
     userfield = fields.Char(size=255, string='User field', index=True)
     peer = fields.Char(size=80, string='Other channel', index=True)
     cdr = fields.Many2one('asterisk.cdr', ondelete='cascade')
-
-
-    @api.model
-    def grant_asterisk_access(self):
-        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
-        sql = "GRANT ALL on asterisk_cel to %s" % ASTERISK_ROLE
-        cr.execute(sql)
-        sql = "GRANT ALL on asterisk_cel_id_seq to %s" % ASTERISK_ROLE
-        cr.execute(sql)
-        cr.commit()
-        cr.close()

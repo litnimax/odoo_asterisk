@@ -2,8 +2,6 @@
 <odoo>
     <data>
 
-        <function name="grant_asterisk_access" model="asterisk.cdr"/>
-
         <record id='asterisk_cdr_action' model='ir.actions.act_window'>
             <field name='name'>Call Details</field>
             <field name='res_model'>asterisk.cdr</field>

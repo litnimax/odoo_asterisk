@@ -39,14 +39,6 @@ class ExtensionsConf(models.Model):
         return created
 
 
-    @api.model
-    def grant_asterisk_access(self):
-        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
-        sql = "GRANT ALL on asterisk_conf_extensions to asterisk"
-        cr.execute(sql)
-        cr.commit()
-        cr.close()
-
 
 
 class Context(models.Model):
@@ -80,13 +72,3 @@ class Context(models.Model):
             return last.priority + 1
         else:
             return 1
-
-
-    @api.model
-    def grant_asterisk_access(self):
-        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
-        sql = "GRANT ALL on asterisk_context to asterisk"
-        cr.execute(sql)
-        cr.commit()
-        cr.close()
-

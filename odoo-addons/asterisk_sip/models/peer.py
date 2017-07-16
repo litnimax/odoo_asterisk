@@ -113,14 +113,6 @@ class SipPeer(models.Model):
                     ('peer', '=', rec.id)])
 
 
-    @api.model
-    def grant_asterisk_access(self):
-        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
-        sql = "GRANT ALL on asterisk_sip_peer to asterisk"
-        cr.execute(sql)
-        cr.commit()
-        cr.close()
-
 
     @api.multi
     def generate_sip_peers(self):

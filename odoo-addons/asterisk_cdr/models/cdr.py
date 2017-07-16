@@ -72,16 +72,6 @@ class Cdr(models.Model):
                 ('cdr', '=', rec.id)])
 
 
-    @api.model
-    def grant_asterisk_access(self):
-        cr = sql_db.db_connect(self.env.cr.dbname).cursor()
-        sql = "GRANT ALL on asterisk_cdr to %s" % ASTERISK_ROLE
-        cr.execute(sql)
-        sql = "GRANT ALL on asterisk_cdr_id_seq to %s" % ASTERISK_ROLE
-        cr.execute(sql)
-        cr.commit()
-        cr.close()
-
 
     @api.multi
     def _get_recording_widget(self):

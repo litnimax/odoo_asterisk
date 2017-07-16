@@ -88,3 +88,12 @@ CREATE OR REPLACE FUNCTION update_cel_cdr_field() RETURNS trigger AS $$
         CREATE TRIGGER update_cel_cdr_field AFTER INSERT on asterisk_cdr
             FOR EACH ROW EXECUTE PROCEDURE update_cel_cdr_field();
 ```
+
+Create role for Asterisk
+```
+GRANT ALL on asterisk_cdr to asterisk;
+GRANT ALL on asterisk_cdr_id_seq to asterisk;
+GRANT ALL on asterisk_cel to asterisk;
+GRANT ALL on asterisk_cel_id_seq to asterisk;
+GRANT ALL on asterisk_context to asterisk;
+GRANT ALL on asterisk_conf_extensions to asterisk;

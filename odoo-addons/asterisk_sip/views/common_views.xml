@@ -4,7 +4,6 @@
     <menuitem name="SIP Peers" id="asterisk_sip_peers_menu"
               parent="asterisk_base.asterisk_apps_menu" sequence="100"/>
 
-    <function name="grant_asterisk_access" model="asterisk.sip_peer"/>
 
     <!-- Common views for SIP peers -->
     <record model="ir.ui.view" id="asterisk_sip_peer_list">
