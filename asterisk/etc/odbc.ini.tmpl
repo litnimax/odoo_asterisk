@@ -1,0 +1,15 @@
+[PostgreSQL-odoo]
+Description         = PostgreSQL connection to asterisk database
+Driver              = PostgreSQL
+Database            = {{ default .Env.PG_DB_NAME "asterisk" }}
+Servername          = {{ default .Env.PG_DB_SERVER "db" }}
+UserName            = {{ default .Env.PG_DB_USER "asterisk" }}
+Password            = {{ default .Env.PG_DB_PASSWORD "asterisk" }}
+Port                = {{ default .Env.PG_DB_PORT "5432" }}
+Protocol            = {{ default .Env.PG_DB_VERSION "9.6" }}
+ReadOnly            = No
+RowVersioning       = No
+ShowSystemTables    = No
+ShowOidColumn       = No
+FakeOidIndex        = No
+ConnSettings        =

@@ -1,0 +1,63 @@
+version: '3.2'
+services:
+  db:
+    image: postgres:9.6
+    #restart: always
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    volumes:
+      - data-db:/var/lib/postgresql/data
+
+
+  odoo:
+    build: ./odoo
+    #restart: always
+    depends_on:
+      - db
+    volumes:
+      - "data-odoo:/data/odoo"
+    environment:
+      - DB_USER=odoo
+      - DB_PASS=odoo
+      - DB_NAME=asterisk
+      - ADMIN_PASSWD=admin-change-me
+      - RUNNING_ENV=dev
+      - MARABUNTA_FORCE_VERSION=1.0.0
+      #- MARABUNTA_MODE=demo
+      - LOG_HANDLER=:WARN
+
+
+  # can be useful for dev when longpolling is required
+  nginx:
+    image: camptocamp/odoo-nginx:9.0-1.1.0
+    depends_on:
+      - odoo
+    ports:
+      - 80:80
+
+  asterisk:
+    build:  asterisk
+    depends_on:
+      - db
+    ports:
+      - 8010:8010
+      - 5060
+      - 8088
+      - 5038
+    environment:
+      - PG_DB_NAME=asterisk
+      - PG_DB_HOST=db
+      - PG_DB_USER=odoo
+      - PG_DB_PASSWORD=odoo
+      - HTTP_ENABLED=yes
+      - MANAGER_ENABLED=yes
+      - MANAGER_WEB_ENABLED=yes
+      - MANAGER_LOGIN=odoo
+      - MANAGER_PASSWORD=odoo
+
+
+volumes:
+  data-odoo:
+  data-db:
+    external: true

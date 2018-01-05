@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp><data>
+
+    <record model="ir.ui.view" id="queue_list">
+        <field name="name">asterisk.queue list</field>
+        <field name="model">asterisk.queue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="operators"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="queue_form">
+        <field name="name">asterisk.queue form</field>
+        <field name="model">asterisk.queue</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="calls">
+                            <tree>
+                                <field name="caller_number"/>
+                                <field name="state"/>
+                                <button name="hangup" type="object" icon="gtk-cancel"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="operators"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="queue_action">
+        <field name="name">Queues</field>
+        <field name="res_model">asterisk.queue</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Queues" parent="pbx_main_menu"
+              action="queue_action" id="queue_menu"/>
+
+
+    <!--
+    <record id="queue_search" model="ir.ui.view">
+        <field name="name">asterisk.queue.search</field>
+        <field name="model">asterisk.queue</field>
+        <field name="arch" type="xml">
+            <search>
+                <group string="Filter by">
+                    <filter string="" domain="[('','=','')]"/>
+                </group>
+                <group string="Group By">
+                    <filter string="" name="by_result" domain="[]"
+                            context="{'group_by': ''}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    -->
+
+</data></openerp>

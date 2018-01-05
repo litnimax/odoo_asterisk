@@ -1,0 +1,8 @@
+[general]
+enabled = yes
+allowed_origins = *
+
+[{{ default .Env.MANAGER_LOGIN "manager" }}]
+type=user
+password={{ default .Env.MANAGER_PASSWORD "secret" }}
+password_format = plain

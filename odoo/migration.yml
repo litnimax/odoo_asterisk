@@ -1,0 +1,18 @@
+migration:
+  options:
+    install_command: odoo
+  versions:
+    - version: 1.0.0
+      operations:
+        pre:
+          - "sh -c 'psql -c \"SELECT 1;\"'"
+        post:
+          - anthem songs.install.base::main
+      addons:
+        upgrade:
+          - asterisk_base
+      modes:
+        demo:
+          operations:
+            post:
+              - anthem songs.install.demo::main

@@ -1,0 +1,10 @@
+[general]
+
+servername=Asteriska
+enabled={{ default .Env.HTTP_ENABLED "no" }}
+bindaddr={{ .Env.HOSTNAME }}
+bindport={{ default .Env.HTTP_PORT "8088" }}
+enablestatic=yes
+
+[post_mappings]
+uploads = /var/lib/asterisk/uploads/

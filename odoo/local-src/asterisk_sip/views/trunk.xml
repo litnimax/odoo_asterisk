@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp><data>
+
+    <record model="ir.ui.view" id="asterisk_sip_peer_trunk_list">
+        <field name="name">asterisk sip peer trunks</field>
+        <field name="model">asterisk.sip_peer</field>
+        <field name="inherit_id" ref="asterisk_sip_peer_list"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+          <data>
+            <field name="server" position="after">
+              <field name="host"/>
+            </field>
+          </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="asterisk_sip_peer_trunk_form">
+        <field name="name">asterisk sip peer trunk form</field>
+        <field name="model">asterisk.sip_peer</field>
+        <field name="inherit_id" ref="asterisk_sip_peer_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+          <data>
+            <field name="peer_type" position="after">
+              <notebook>
+                <page string="Basic Settings">
+                  <group>
+                    <group string="Main">
+                        <field name="host" required="1"/>
+                        <field name="outboundproxy"/>
+                        <field name="secret" required="1"/>
+                        <field name="context" required="True"/>
+                        <field name="deny"/>
+                        <field name="permit"/>
+                        <field name="callerid"/>
+                    </group>
+                    <group string="Media">
+                      <field name="dtmfmode"/>
+                      <field name="allow"/>
+                      <field name="disallow"/>
+                      <field name="nat"/>
+                      <field name="qualify"/>
+                    </group>
+                  </group>
+                  <group  string="Status">
+                    <group>
+                      <field name="ipaddr" class="oe_read_only"/>
+                      <field name="port" class="oe_read_only"/>
+                    </group>
+                  </group>
+                </page>
+                <page string="Advanced Settings">
+                  <group>
+                    <group>
+                      <field name="rtptimeout"/>
+                      <field name="canreinvite"/>
+                      <field name="rtptimeout"/>
+                      <field name="rtpholdtimeout"/>
+                      <field name="language"/>
+                    </group>
+                  </group>
+                </page>
+              </notebook>
+            </field>
+          </data>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="asterisk_sip_peer_trunk_action">
+        <field name="name">Trunks</field>
+        <field name="res_model">asterisk.sip_peer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+          (0, 0, {'view_mode': 'tree', 'view_id': ref('asterisk_sip_peer_trunk_list')}),
+          (0, 0, {'view_mode': 'form', 'view_id': ref('asterisk_sip_peer_trunk_form')})]"/>
+        <field name="domain">[('peer_type', '=', 'trunk')]</field>
+        <field name="context">{
+            'default_peer_type': 'trunk',
+            'default_type': 'friend',
+            'default_context': 'trunks',
+            }
+        </field>
+    </record>
+
+    <menuitem name="Trunks" parent="asterisk_sip_peers_menu" sequence="30"
+              action="asterisk_sip_peer_trunk_action" id="asterisk_sip_peer_trunk_menu"/>
+
+
+</data></openerp>

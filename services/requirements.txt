@@ -1,7 +1,0 @@
-gevent
-git+https://github.com/digium/swagger-py.git
-ari
-odoorpc
-py-Asterisk
-requests
-setproctitle
