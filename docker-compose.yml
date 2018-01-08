@@ -8,6 +8,8 @@ services:
       - POSTGRES_PASSWORD=odoo
     volumes:
       - data-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
 
   odoo:
@@ -26,6 +28,9 @@ services:
       - MARABUNTA_FORCE_VERSION=1.0.0
       #- MARABUNTA_MODE=demo
       - LOG_HANDLER=:WARN
+    ports:
+      - 8069:8069
+      - 8072:8072
 
 
   # can be useful for dev when longpolling is required
@@ -40,14 +45,10 @@ services:
     build:  asterisk
     depends_on:
       - db
-    ports:
-      - 8010:8010
-      - 5060
-      - 8088
-      - 5038
     environment:
+      - ODOO_HOST=${ODOO_HOST:-odoo}
       - PG_DB_NAME=asterisk
-      - PG_DB_HOST=db
+      - PG_DB_HOST=${PG_DB_HOST:-db}
       - PG_DB_USER=odoo
       - PG_DB_PASSWORD=odoo
       - HTTP_ENABLED=yes
@@ -55,6 +56,7 @@ services:
       - MANAGER_WEB_ENABLED=yes
       - MANAGER_LOGIN=odoo
       - MANAGER_PASSWORD=odoo
+    network_mode: host
 
 
 volumes:

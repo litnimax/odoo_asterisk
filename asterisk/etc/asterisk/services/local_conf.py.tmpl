@@ -1,0 +1,26 @@
+ODOO_HOST = '{{ .Env.ODOO_HOST }}'
+ODOO_PORT = 8069
+ODOO_POLLING_PORT = 8072
+ODOO_DB = '{{ .Env.PG_DB_NAME }}'
+ODOO_USER = '{{ .Env.PG_DB_USER }}'
+ODOO_PASSWORD = '{{ .Env.PG_DB_PASSWORD }}'
+
+ASTERISK_HELPER_URL = 'http://localhost:8010'
+
+conf = {
+    'host': 'localhost',
+    'ami_port': 5038,
+    'http_port': 8088,
+    'ami_username': '{{ .Env.MANAGER_LOGIN }}',
+    'ami_password': '{{ .Env.MANAGER_PASSWORD }}',
+    'ari_username': '{{ .Env.MANAGER_LOGIN }}',
+    'ari_password': '{{ .Env.MANAGER_PASSWORD }}',
+}
+
+UPDATE_CDR_DELAY = 5 # Delay X sec before updating cdr to make sure it's in DB.
+UPDATE_CHANNEL_DELAY = 1 # Delay X sec before updating cdr to make sure it's in DB.
+RECORDING_DOWNLOAD_DELAY = 1 # Delay to let Asterisk close recorded file.
+
+LOG_CONSOLE = True
+LOG_FILE = '/tmp/services.log'
+LOG_LEVEL = 'DEBUG'
