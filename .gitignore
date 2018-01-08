@@ -1,5 +1,6 @@
 *.idea
 *.pyc
+.*.swp
 env/
 local_conf.py
 pymakr.conf

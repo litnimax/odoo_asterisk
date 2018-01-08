@@ -3,15 +3,10 @@ FROM litnimax/alpine-asterisk
 
 ENV maintainer litnimaxster@gmail.com
 
-RUN apk add --no-cache python py2-pip py2-tornado bash supervisor
+RUN apk add --no-cache supervisor git python py2-pip py2-tornado py2-setproctitle py2-gevent py2-requests
+RUN apk add --no-cache tcpdump ethtool vlan iftop ngrep bash vim screen tmux
 
-COPY ./docker-entrypoint.sh /
+COPY ./ /
 
-COPY ./etc/supervisord.conf /etc
-
-# Asterisk conf templates
-COPY ./etc/asterisk/*tmpl /etc/asterisk/
-
-# Copy agent
-COPY ./agent/ /opt/agent/
-RUN cd /opt/agent && pip install -r requirements.txt
+RUN pip install -r /etc/agent/requirements.txt && \
+    pip install -r /etc/asterisk/services/requirements.txt

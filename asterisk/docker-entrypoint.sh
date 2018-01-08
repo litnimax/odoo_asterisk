@@ -1,13 +1,8 @@
 #!/bin/sh
 
-# etc templates
-for i in /etc/*tmpl; do
-  dockerize -template "$i":"`echo $i|sed s/.tmpl//`";
-done
-
-# Asterisk templates
-for i in /etc/asterisk/*tmpl; do
-  dockerize -template "$i":"`echo $i|sed s/.tmpl//`";
+# dockerize templates
+for i in `find /etc -name '*.tmpl'`; do
+  dockerize -template "$i":"${i%%.tmpl}"
 done
 
 if [ "$1" = "" ]; then

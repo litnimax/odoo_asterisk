@@ -35,7 +35,7 @@ Don't forget to activate *developer mode* and update apps list so that Odoo know
 Also this folder contains requirements for Odoo, you can install them from pip:
 
 ```sh
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 ```
 #### PostgreSQL preparations
 Before installing Odoo Asterisk addon modules you have to create PostgreSQL role for Asterisk (set your own password!):
@@ -57,7 +57,7 @@ Clone this repo on your Asterisk server, create python virtual environment, go t
 virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
-python cli_server.py
+python asterisk_helper.py
 ```
 After that go to Odoo and set Asterisk CLI URL	in server's settings to (for example if your asterisk server is on 192.168.1.1):
 ```
@@ -98,3 +98,6 @@ GRANT ALL on asterisk_cel to asterisk;
 GRANT ALL on asterisk_cel_id_seq to asterisk;
 GRANT SELECT on asterisk_context to asterisk;
 GRANT SELECT on asterisk_conf_extensions to asterisk;
+````
+
+Run odoo with `--workers=N` where N > 1. This automatically enables odoo to listen on port 8072 where ami_brocker.py service connects.
