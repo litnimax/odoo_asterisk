@@ -20,6 +20,4 @@ def asterisk_reload():
 if __name__ == '__main__':
   logger.info('Broker started')
   flask_instance = gevent.spawn(http_server.serve_forever)
-  #pbx_instance = gevent.spawn(pbx.serve_forever)
   gevent.joinall([flask_instance])
- 

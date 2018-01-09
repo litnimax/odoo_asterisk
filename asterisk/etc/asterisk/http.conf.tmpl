@@ -2,7 +2,7 @@
 
 servername=Asteriska
 enabled={{ default .Env.HTTP_ENABLED "no" }}
-bindaddr={{ .Env.HOSTNAME }}
+bindaddr={{ default .Env.BRIDGE_IP "127.0.0.1" }}
 bindport={{ default .Env.HTTP_PORT "8088" }}
 enablestatic=yes
 

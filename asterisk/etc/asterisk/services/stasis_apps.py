@@ -254,11 +254,17 @@ def on_stasis_start(channel_dict, event):
 
 
 
-def connect_ari(conf):
+def connect_ari():
     try:
-        url = 'http://{}:{}'.format(conf['host'], conf['http_port'])
-        _logger.debug('ARI connecting to {}'.format(url))
-        ari_client = ari.connect(url, conf['ari_username'], conf['ari_password'])
+        if not odoo:
+            raise Exception('Odoo not connected.')
+        # Connect only to one server for now :-P
+        servers = odoo.env['asterisk.server'].search([])
+        server = odoo.env['asterisk.server'].browse([servers[0]])
+        url = 'http://{}:{}'.format(server.host, server.http_port)
+        _logger.debug('ARI connecting to {} as {}:{}'.format(
+            url, server.ami_username, server.ami_password))
+        ari_client = ari.connect(url, server.ami_username, server.ami_password)
         if not ari_client:
             _logger.error('ARI client not connected.')
             return False
@@ -281,10 +287,10 @@ def connect_ari(conf):
 
 
 
-def always_connect_ari(conf):
+def always_connect_ari():
     while True:
         global ari_client
-        ari_client = connect_ari(conf)
+        ari_client = connect_ari()
         if ari_client:
             try:
                 ari_client.on_channel_event('StasisStart', on_stasis_start)
@@ -402,7 +408,7 @@ def start():
     setproctitle.setproctitle('stasis_{}'.format(STASIS_APP))
     global odoo
     odoo = get_odoo_connection()
-    ari_handle = gevent.spawn(always_connect_ari, conf)
+    ari_handle = gevent.spawn(always_connect_ari)
     bus_poller_handle = gevent.spawn(poll_message_bus)
     try:
         gevent.joinall([bus_poller_handle, ari_handle])

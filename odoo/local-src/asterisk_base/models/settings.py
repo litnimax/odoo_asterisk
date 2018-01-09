@@ -27,7 +27,7 @@ class AsteriskBaseSettings(models.TransientModel):
     @api.multi
     def set_params(self):
         self.ensure_one()
-        for field_name in PARAMS:
+        for field_name in self.PARAMS:
             value = getattr(self, field_name, '')
             self.env['ir.config_parameter'].set_param(
                 'asterisk.' + field_name, value)
@@ -35,7 +35,7 @@ class AsteriskBaseSettings(models.TransientModel):
 
     def get_default_params(self, fields):
         res = {}
-        for field_name in PARAMS:
+        for field_name in self.PARAMS:
             res[field_name] = self.env[
                 'ir.config_parameter'].get_param(
                     'asterisk.' + field_name, '')
@@ -45,7 +45,7 @@ class AsteriskBaseSettings(models.TransientModel):
     def notify_agents(self):
         self.ensure_one()
         dict_params = {}
-        for param in PARAMS:
+        for param in self.PARAMS:
             result_list = [k for k in param]
             result_list[0] = result_list[0].capitalize()
             try:

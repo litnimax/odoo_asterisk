@@ -18,16 +18,6 @@ AMI_RELOAD_PAUSE = 2 # 2 seconds between AMI connection reload
 
 ASTERISK_HELPER_URL = 'http://localhost:8010'
 
-conf = {
-    'host': 'localhost',
-    'ami_port': 5038,
-    'http_port': 8088,
-    'ami_username': 'asterisk_admin',
-    'ami_password': 'admin-secret',
-    'ari_username': 'asterisk_admin',
-    'ari_password': 'admin-secret',
-}
-
 UPDATE_CDR_DELAY = 5 # Delay X sec before updating cdr to make sure it's in DB.
 UPDATE_CHANNEL_DELAY = 1 # Delay X sec before updating cdr to make sure it's in DB.
 RECORDING_DOWNLOAD_DELAY = 1 # Delay to let Asterisk close recorded file.
@@ -35,6 +25,11 @@ RECORDING_DOWNLOAD_DELAY = 1 # Delay to let Asterisk close recorded file.
 LOG_CONSOLE = True
 LOG_FILE = os.path.join(os.path.dirname(__file__), 'services.log')
 LOG_LEVEL = 'DEBUG'
+
+try:
+    from local_conf import *
+except ImportError as e:
+    _logger.warning('Did not import local_conf.py.')
 
 
 # Log handlers
@@ -103,12 +98,6 @@ LOGGING['loggers'] = {
         'propagate': True,
     },
 }
-
-
-try:
-    from local_conf import *
-except ImportError as e:
-    _logger.warning('Did not import local_conf.py.')
 
 logging.basicConfig()
 _logger = logging.getLogger(__name__)

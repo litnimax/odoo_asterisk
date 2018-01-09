@@ -11,6 +11,8 @@ migration:
       addons:
         upgrade:
           - asterisk_base
+          - asterisk_cdr
+          - asterisk_sip
       modes:
         demo:
           operations:

@@ -47,12 +47,13 @@ def get_odoo_connection():
 class ServerAmiManager(object):
     #cmd_Q = Queue()
 
-    def __init__(self, server_id, host, port, username, password):
-        self.server_id = server_id
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
+    def __init__(self, server):
+        self.server = server
+        self.server_id = server.id
+        self.host = server.host
+        self.port = server.ami_port
+        self.username = server.ami_username
+        self.password = server.ami_password
         # Start the command Q
         # Populate events
         self.events = Asterisk.Util.EventCollection()
@@ -103,6 +104,8 @@ class ServerAmiManager(object):
         while True:
             try:
                 # Create PBX connection
+                _logger.info('AMI connecting to {}:{}@{}:{}'.format(
+                    self.username, self.password, self.host, self.port))
                 self.pbx = Manager((self.host, int(self.port)),
                                    self.username, self.password)
                 _logger.info('Connected to {}'.format(self.host))
@@ -165,7 +168,7 @@ class ServerAmiManager(object):
         exten = event.get('Exten')
         # Download recording
         url = 'http://{}:{}/static/monitor/{}.wav'.format(
-            conf['host'], conf['http_port'], call_id)
+            self.server.host, self.server.http_port, call_id)
         response = requests.get(url)
         if response.status_code == 404:
             _logger.info('Recording for {} not found on the server.'.format(exten))
@@ -301,8 +304,7 @@ def spawn_server_ami_managers():
     servers = odoo.env['asterisk.server'].search([])
     for server_id in servers:
         server = odoo.env['asterisk.server'].browse(server_id)[0]
-        manager = ServerAmiManager(server.id, server.host, server.ami_port,
-                               server.ami_username, server.ami_password)
+        manager = ServerAmiManager(server)
         server_ami_managers.append(manager)
         try:
             h = gevent.spawn(manager.loop)

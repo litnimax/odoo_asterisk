@@ -18,10 +18,10 @@ def setup_company(ctx, req):
     company.logo = logo
 
     values = {
-        'name': "Test company Address",
-        'street': "Test Street 1",
+        'name': "Asterisk company Address",
+        'street': "Asterisk Street 1",
         'zip': "1000",
-        'city': "Moscow",
+        'city': "Chisington",
         'parent_id': company.id,
         'logo': logo,
         'currency_id': ctx.env.ref('base.CHF').id
@@ -41,5 +41,6 @@ def setup_language(ctx):
 
 def main(ctx):
     """ Create demo data """
-    req = Requirement.parse('odoo-asterisk')    
+    req = Requirement.parse('odoo-asterisk')
     setup_language(ctx)
+    setup_company(ctx, req)

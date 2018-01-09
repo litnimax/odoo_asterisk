@@ -2,19 +2,23 @@ version: '3.2'
 services:
   db:
     image: postgres:9.6
-    #restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
     volumes:
       - data-db:/var/lib/postgresql/data
     ports:
-      - 5432:5432
-
+      - 5432
+    networks:
+      default:
+        ipv4_address: ${DB_IP}
+    extra_hosts:
+      - asterisk:${BRIDGE_IP}
 
   odoo:
     build: ./odoo
-    #restart: always
+    restart: unless-stopped
     depends_on:
       - db
     volumes:
@@ -23,43 +27,63 @@ services:
       - DB_USER=odoo
       - DB_PASS=odoo
       - DB_NAME=asterisk
+      - DB_HOST=${DB_IP:-db}
       - ADMIN_PASSWD=admin-change-me
       - RUNNING_ENV=dev
-      - MARABUNTA_FORCE_VERSION=1.0.0
-      #- MARABUNTA_MODE=demo
+      - MARABUNTA_MODE=base
       - LOG_HANDLER=:WARN
+      - MARABUNTA_FORCE_VERSION=${MARABUNTA_FORCE_VERSION}
     ports:
-      - 8069:8069
-      - 8072:8072
+      - 8069
+      - 8072
+    networks:
+      default:
+        ipv4_address: ${ODOO_IP}
+    extra_hosts:
+      - asterisk:${BRIDGE_IP}
 
-
-  # can be useful for dev when longpolling is required
   nginx:
     image: camptocamp/odoo-nginx:9.0-1.1.0
     depends_on:
       - odoo
     ports:
-      - 80:80
+      - 80
+    networks:
+      default:
+        ipv4_address: ${NGINX_IP}
 
   asterisk:
     build:  asterisk
+    restart: unless-stopped
     depends_on:
       - db
     environment:
-      - ODOO_HOST=${ODOO_HOST:-odoo}
-      - PG_DB_NAME=asterisk
-      - PG_DB_HOST=${PG_DB_HOST:-db}
-      - PG_DB_USER=odoo
-      - PG_DB_PASSWORD=odoo
+      - ODOO_IP=${ODOO_IP:-odoo}
+      - ODOO_DB=asterisk
+      - ODOO_USER=admin
+      - ODOO_PASSWORD=admin
       - HTTP_ENABLED=yes
       - MANAGER_ENABLED=yes
       - MANAGER_WEB_ENABLED=yes
       - MANAGER_LOGIN=odoo
       - MANAGER_PASSWORD=odoo
     network_mode: host
-
+    ports:
+      - 5038
+      - 5060/udp
+      - 8010
+      - 8088
+    extra_hosts:
+      - db:${DB_IP}
+      - odoo:${ODOO_IP}
 
 volumes:
   data-odoo:
   data-db:
-    external: true
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SUBNET}

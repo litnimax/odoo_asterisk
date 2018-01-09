@@ -5,8 +5,8 @@
     <record id="asterisk_test_server" model="asterisk.server">
       <field name="name">Test server</field>
       <field name="host">127.0.0.1</field>
-      <field name="ami_username">asterisk_admin</field>
-      <field name="ami_password">admin-secret</field>
+      <field name="ami_username">odoo</field>
+      <field name="ami_password">odoo</field>
     </record>
   </data>
 </odoo>
