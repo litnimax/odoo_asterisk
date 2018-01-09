@@ -1,1 +1,17 @@
-docker-compose.override.yml
+version: '3.2'
+services:
+  nginx:
+    ports:
+      - 8080:80
+
+  odoo:
+    volumes:
+      - "./odoo/local-src:/opt/odoo/local-src"
+      - "./odoo/external-src:/opt/odoo/external-src"
+      - "./odoo/songs:/opt/odoo/songs"
+      - "./odoo/migration.yml:/opt/odoo/migration.yml"
+      - "./odoo/data:/opt/odoo/data"
+
+  asterisk:
+    volumes:
+      - "./asterisk/etc/asterisk/services:/etc/asterisk/services"
