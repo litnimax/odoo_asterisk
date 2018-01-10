@@ -76,6 +76,16 @@ services:
     extra_hosts:
       - db:${DB_IP}
       - odoo:${ODOO_IP}
+      - broker:${BROKER_IP}
+
+  broker:
+    build: broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    networks:
+      default:
+        ipv4_address: ${BROKER_IP}
 
 volumes:
   data-odoo:
