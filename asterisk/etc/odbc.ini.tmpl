@@ -1,10 +1,10 @@
 [PostgreSQL-odoo]
 Description         = PostgreSQL connection to asterisk database
 Driver              = PostgreSQL
-Database            = {{ default .Env.DB_NAME "asterisk" }}
-Servername          = {{ default .Env.DB_IP "db" }}
-UserName            = {{ default .Env.DB_USER "asterisk" }}
-Password            = {{ default .Env.DB_PASSWORD "asterisk" }}
+Database            = {{ default .Env.DB_NAME "defaultdb" }}
+Servername          = {{ default .Env.DB_IP "defaultsrv" }}
+UserName            = {{ default .Env.DB_USER "defaultuser" }}
+Password            = {{ default .Env.DB_PASSWORD "defaultpassword" }}
 Port                = {{ default .Env.DB_PORT "5432" }}
 Protocol            = {{ default .Env.DB_VERSION "9.6" }}
 ReadOnly            = No

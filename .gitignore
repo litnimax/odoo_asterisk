@@ -2,5 +2,7 @@
 *.pyc
 .*.swp
 env/
+.env
 local_conf.py
 pymakr.conf
+docker-compose.override.yml
