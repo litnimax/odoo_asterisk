@@ -4,7 +4,7 @@ ENV maintainer litnimaxster@gmail.com
 # Project's specifics packages
 RUN set -x; \
         apt-get update \
-        && apt-get install -y --no-install-recommends git\
+        && apt-get install -y --no-install-recommends git mosquitto-clients\
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 

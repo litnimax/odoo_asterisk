@@ -1,3 +1,4 @@
 humanize
 git+https://github.com/litnimax/PyAjam.git
 requests
+paho-mqtt

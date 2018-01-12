@@ -6,6 +6,7 @@ from xml.etree import cElementTree as ET
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError, Warning, ValidationError
 from pyajam import Pyajam
+import paho.mqtt.publish as publish
 
 
 _logger = logging.getLogger(__name__)
@@ -106,49 +107,15 @@ class AsteriskServer(models.Model):
         self.asterisk_command('dialplan reload')
 
 
-    def get_ajam_session(self):
-        # Start AJAM session
-        s = requests.session()
-        try:
-            url = 'http://{}:{}/mxml?action=Login&' \
-                  'username={}&secret={}'.format(
-                        self.host, self.http_port,
-                        self.ami_username, self.ami_password)
-            resp = s.get(url, timeout=REQUEST_TIMEOUT)
-        except requests.ConnectionError as e:
-            raise UserError('Cannot connect to Asterisk server!')
-        # Check status
-        if resp.status_code != 200:
-            raise UserError('Asterisk server response status {}'.format(
-                                                            resp.status_code))
-        # Convert response from XML to {}
-        mxml_response = ET.XML(resp.text)
-        dict_response = etree_to_dict(mxml_response)
-        if not dict_response.get('ajax-response'):
-            _logger.error('AJAX response not found: {}'.format(mxml_response))
-            raise Warning('AJAX response not found!')
-        response = dict_response.get('ajax-response').get('response', {}).get(
-            'generic', {}).get('@response')
-        if response == 'Error':
-            message = dict_response.get('ajax-response').get('response', {}).get(
-                'generic', {}).get('@message')
-            raise Warning('Error: {}!'.format(message))
-
-        # Return session
-        return s
-
-
-    def sync_conf(self, conf, session):
-        _logger.debug('Syncing {} @ {}...'.format(
+    def sync_conf(self, conf):
+        broker_host = self.env['ir.config_parameter'].get_param(
+            'asterisk_base.broker_host', 'nonresolvable.hz')
+        _logger.debug('Syncing {} @ {} via {}...'.format(
             conf.filename,
-            conf.server.name))
-        url = 'http://{}:{}/uploads'.format(self.host, self.http_port)
-        response = session.post(url,
-            files={'file': (conf.filename, conf.content, 'text/plain',
-                                        {'Content-type': 'text/plain'})})
-        if 'File successfully uploaded' not in response.text:
-            raise Warning('File upload error: {}.'.format(response.text))
-
+            conf.server.name,
+            broker_host))
+        topic = self.name + '/file/' + conf.filename
+        publish.single(topic, conf.content, hostname=broker_host, retain=True)
 
 
     def sync_all_conf(self):
