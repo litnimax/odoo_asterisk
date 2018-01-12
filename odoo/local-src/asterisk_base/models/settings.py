@@ -6,10 +6,11 @@ class AsteriskBaseSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     _name = 'asterisk.settings'
 
-    PARAMS = ['sub_addr', 'pub_addr', 'agent_repository_ssh_url',
+    PARAMS = ['broker_host', 'sub_addr', 'pub_addr', 'agent_repository_ssh_url',
               'agent_repository_public_key', 'agent_repository_private_key',
               'ssh_authorized_keys', 'no_asterisk']
 
+    broker_host = fields.Char(string='MQTT Broker host', default='broker')
     sub_addr = fields.Char(string='SUB address')
     pub_addr = fields.Char(string='PUB address')
     agent_repository_ssh_url = fields.Char(string="Repository SSH URL")

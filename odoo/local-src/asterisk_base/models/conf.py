@@ -26,9 +26,8 @@ class AsteriskConf(models.Model):
 
     def sync_conf(self):
         self.ensure_one()
-        session = self.server.get_ajam_session()
-        self.server.sync_conf(self, session)
-        self.server.asterisk_reload()
+        self.server.sync_conf(self)
+        #self.server.asterisk_reload()
         # Update last sync
         self.sync_date = fields.Datetime.now()
         self.sync_uid = self.env.uid
