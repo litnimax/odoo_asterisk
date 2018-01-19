@@ -63,7 +63,7 @@ services:
         ipv4_address: "{{ NGINX_IP }}"
 
   asterisk:
-    from:  asterisk
+    from:   dougbtv/asterisk
     restart: unless-stopped
     depends_on:
       - db
