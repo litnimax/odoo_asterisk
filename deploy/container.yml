@@ -1,0 +1,98 @@
+defaults:
+  POSTGRES_USER: odoo
+  POSTGRES_PASSWORD: odoo
+  POSTGRES_DB: asterisk
+  SUBNET: 10.18.0.0/24
+  BRIDGE_IP: 10.18.0.1
+  ODOO_IP: 10.18.0.2
+  DB_IP: 10.18.0.3
+  NGINX_IP: 10.18.0.4
+  BROKER_IP: 10.18.0.5
+  MARABUNTA_FORCE_VERSION: 1.0.0
+
+version: '2'
+services:
+  db:
+    from: postgres:9.6
+    restart: unless-stopped
+    environment:
+    volumes:
+      - data-db:/var/lib/postgresql/data
+    ports:
+      - 5432
+    networks:
+      default:
+        ipv4_address: "{{ DB_IP }}"
+    extra_hosts:
+      - asterisk: "{{ BRIDGE_IP }}"
+
+  odoo:
+    from: ./odoo
+    restart: unless-stopped
+    depends_on:
+      - db
+    volumes:
+      - "data-odoo:/data/odoo"
+    environment:
+      - DB_USER=odoo
+      - DB_PASS=odoo
+      - DB_NAME=asterisk
+      - DB_HOST="{{ DB_IP | default('db') }}"
+      - ADMIN_PASSWD=admin-change-me
+      - RUNNING_ENV=dev
+      - MARABUNTA_MODE=base
+      - LOG_HANDLER=:WARN
+      - MARABUNTA_FORCE_VERSION="{{ MARABUNTA_FORCE_VERSION }}"
+    ports:
+      - 8069
+      - 8072
+    networks:
+      default:
+        ipv4_address: "{{ ODOO_IP }}"
+    extra_hosts:
+      - asterisk:"{{ BRIDGE_IP }}"
+
+  nginx:
+    from: camptocamp/odoo-nginx:9.0-1.1.0
+    depends_on:
+      - odoo
+    ports:
+      - 80
+    networks:
+      default:
+        ipv4_address: "{{ NGINX_IP }}"
+
+  asterisk:
+    from:  asterisk
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - ODOO_IP="{{ ODOO_IP | default('odoo') }}"
+      - ODOO_DB=asterisk
+      - ODOO_USER=admin
+      - ODOO_PASSWORD=admin
+      - HTTP_ENABLED=yes
+      - MANAGER_ENABLED=yes
+      - MANAGER_WEB_ENABLED=yes
+      - MANAGER_LOGIN=odoo
+      - MANAGER_PASSWORD=odoo
+    network_mode: host
+    ports:
+      - 5038
+      - 5060/udp
+      - 8010
+      - 8088
+    extra_hosts:
+      - db:"{{ DB_IP }}"
+      - odoo: "{{ ODOO_IP }}"
+      - broker:"{{ BROKER_IP }}"
+
+  broker:
+    from: broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    networks:
+      default:
+        ipv4_address: "{{ BROKER_IP }}"
