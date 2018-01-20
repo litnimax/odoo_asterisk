@@ -1,0 +1,8 @@
+from: alpine:edge
+environment:
+  maintainer: litnialex@gmail.com
+ports:
+- '1883'
+command:
+- /usr/sbin/mosquitto
+- -v

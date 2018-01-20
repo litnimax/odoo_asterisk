@@ -6,3 +6,4 @@ env/
 local_conf.py
 pymakr.conf
 docker-compose.override.yml
+deploy/ansible-deployment

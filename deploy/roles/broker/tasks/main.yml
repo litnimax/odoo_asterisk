@@ -1,0 +1,1 @@
+- shell: apk add --no-cache bash mosquitto
