@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-  <data>
+  <data noupdate="1">
     <record id="asterisk_modules_conf" model="asterisk.conf">
       <field name="filename">modules.conf</field>
       <field name="server" ref="asterisk_test_server"/>

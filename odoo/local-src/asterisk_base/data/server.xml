@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-  <data>
+  <data noupdate="1">
     <record id="asterisk_test_server" model="asterisk.server">
       <field name="name">Test server</field>
       <field name="host">127.0.0.1</field>
