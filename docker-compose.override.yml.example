@@ -14,4 +14,5 @@ services:
 
   asterisk:
     volumes:
-      - "./asterisk/etc/asterisk/services:/etc/asterisk/services"
+      - "./asterisk/etc/:/etc/"
+      - "./asterisk/services/:/services/"

@@ -9,7 +9,8 @@ RUN apk update && \
 #Install optional tools
 RUN apk add tcpdump ethtool vlan iftop ngrep bash vim screen tmux mosquitto-clients
 
+RUN mkdir /var/log/supervisor
+
 COPY ./ /
 
-RUN pip install -r /etc/agent/requirements.txt && \
-    pip install -r /etc/asterisk/services/requirements.txt
+RUN pip install -r /services/requirements.txt

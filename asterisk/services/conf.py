@@ -16,6 +16,17 @@ AMI_RECONNECT_TIMEOUT = 3
 POLL_RECONNECT_TIMEOUT = 5
 AMI_RELOAD_PAUSE = 2 # 2 seconds between AMI connection reload
 
+# Agent
+PORT = 8010
+ASTERISK = '/usr/sbin/asterisk'
+ASTERISK_ARGS = '-cr'
+ASTERISK_RECORDING_FOLDER = '/var/spool/asterisk/monitor'
+SSL_ENABLED = False
+SSL_CERT = './cert.pem'
+SSL_KEY = './privkey.pem'
+
+
+
 ASTERISK_HELPER_URL = 'http://localhost:8010'
 
 UPDATE_CDR_DELAY = 5 # Delay X sec before updating cdr to make sure it's in DB.
@@ -23,7 +34,6 @@ UPDATE_CHANNEL_DELAY = 1 # Delay X sec before updating cdr to make sure it's in 
 RECORDING_DOWNLOAD_DELAY = 1 # Delay to let Asterisk close recorded file.
 
 LOG_CONSOLE = True
-LOG_FILE = os.path.join(os.path.dirname(__file__), 'services.log')
 LOG_LEVEL = 'DEBUG'
 
 try:
@@ -36,8 +46,6 @@ except ImportError as e:
 HANDLRES = []
 if LOG_CONSOLE:
     HANDLRES.append('console')
-if LOG_FILE:
-    HANDLRES.append('file')
 
 LOGGING = {
     'version': 1,
@@ -55,18 +63,6 @@ LOGGING = {
         },
     }
 }
-
-
-# Log to file if log file is configured
-if LOG_FILE:
-    LOGGING['handlers']['file'] = {
-        'level': LOG_LEVEL,
-        'class': 'logging.handlers.RotatingFileHandler',
-        'formatter': 'verbose',
-        'filename': LOG_FILE,
-        'maxBytes': 10485760,
-        'backupCount': 5
-    }
 
 
 LOGGING['loggers'] = {

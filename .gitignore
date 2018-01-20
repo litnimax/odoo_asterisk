@@ -7,3 +7,6 @@ local_conf.py
 pymakr.conf
 docker-compose.override.yml
 deploy/ansible-deployment
+odoo/src/odoo
+# Ignore .conf files from local bound conainer folder
+asterisk/etc/asterisk/

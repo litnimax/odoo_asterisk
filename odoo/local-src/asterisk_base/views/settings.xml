@@ -8,18 +8,10 @@
         <header>
           <button string="Save" name="execute" type="object" class="oe_highlight"/>
           or <button string="Cancel" name="cancel" type="object" class="oe_link"/>
-          <button name="notify_agents" type="object"
-              string="Notify Agents" icon="fa-cog"/>
         </header>
         <group>
-            <group string="Broker Host">
-                <field name="broker_host"/>
-            </group>
-            <group string="Z Bus">
-                <field name="pub_addr"/>
-            </group>
-            <group>
-              <field name="sub_addr"/>
+            <group string="Broker Server">
+                <field name="mqtt_server"/>
             </group>
         </group>
         <group string="Asterisk Settings">
@@ -31,15 +23,6 @@
           <group>
             <field name="ssh_authorized_keys"/>
           </group>
-        </group>
-        <group string="Repository Settings">
-            <group>
-                <field name="agent_repository_private_key"/>
-            </group>
-            <group>
-                <field name="agent_repository_ssh_url"/>
-                <field name="agent_repository_public_key"/>
-            </group>
         </group>
       </form>
     </field>

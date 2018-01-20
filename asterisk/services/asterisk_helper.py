@@ -9,6 +9,8 @@ from tornado.httpserver import HTTPServer
 logging.basicConfig(level=logging.DEBUG)
 _logger = logging.getLogger(__name__)
 
+ASTERISK = '/usr/bin/asterisk'
+
 from conf import *
 
 class MyTermSocket(TermSocket):

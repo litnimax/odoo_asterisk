@@ -43,6 +43,7 @@ class AsteriskServer(models.Model):
     _name = 'asterisk.server'
 
     name = fields.Char(required=True)
+    uid = fields.Char(string='UID')
     host = fields.Char(required=True)
     note = fields.Text()
     ami_username = fields.Char(required=True, string='AMI username')
@@ -61,7 +62,7 @@ class AsteriskServer(models.Model):
                           default='ws://localhost:8010/websocket')
     cli_area = fields.Text(compute='_get_cli_area', inverse='_set_cli_area')
 
-    
+
 
     @api.multi
     def _get_cli_area(self):
@@ -109,13 +110,18 @@ class AsteriskServer(models.Model):
 
     def sync_conf(self, conf):
         broker_host = self.env['ir.config_parameter'].get_param(
-            'asterisk_base.broker_host', 'nonresolvable.hz')
+            'asterisk.mqtt_server', 'nonresolvable.hz')
         _logger.debug('Syncing {} @ {} via {}...'.format(
             conf.filename,
             conf.server.name,
             broker_host))
-        topic = self.name + '/file/' + conf.filename
-        publish.single(topic, conf.content, hostname=broker_host, retain=True)
+        topic = '/asterisk/' + self.uid + '/file'
+        msg = {
+            'Content': conf.content,
+            'FileName': conf.filename,
+            'DestinationFolder': '/etc/asterisk',
+        }
+        publish.single(topic, json.dumps(msg), hostname=broker_host, retain=True)
 
 
     def sync_all_conf(self):

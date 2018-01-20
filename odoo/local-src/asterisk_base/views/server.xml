@@ -18,6 +18,7 @@
               <button name="sync_all_conf" type="object"
                 icon="fa-paper-plane" class="oe_highlight"/>
               <field name="name"/>
+              <field name="uid"/>
               <field name="host"/>
           </tree>
       </field>
@@ -42,6 +43,7 @@
                   <page string="Settings">
                     <group>
                       <group>
+                        <field name='uid'/>
                         <field name='name'/>
                         <field name='host'/>
                         <field name='note'/>
