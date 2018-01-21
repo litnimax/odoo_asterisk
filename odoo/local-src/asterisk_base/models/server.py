@@ -115,7 +115,7 @@ class AsteriskServer(models.Model):
             conf.filename,
             conf.server.name,
             broker_host))
-        topic = '/asterisk/' + self.uid + '/file'
+        topic = 'asterisk/' + self.uid + '/file'
         msg = {
             'Content': conf.content,
             'FileName': conf.filename,
