@@ -101,13 +101,6 @@ class AsteriskServer(models.Model):
         response = ajam.command(command)
 
 
-
-    def asterisk_reload(self):
-        self.ensure_one()
-        self.asterisk_command('module reload')
-        self.asterisk_command('dialplan reload')
-
-
     def sync_conf(self, conf):
         broker_host = self.env['ir.config_parameter'].get_param(
             'asterisk.mqtt_server', 'nonresolvable.hz')
@@ -129,17 +122,12 @@ class AsteriskServer(models.Model):
         if self.no_asterisk_mode():
             _logger.warning('No Asterisk mode enabled, not doing anything.')
             return
-        session = self.get_ajam_session()
         # Start sending config files to the server
         for conf in self.conf_files:
-            self.sync_conf(conf, session)
+            self.sync_conf(conf)
         # Update last sync
         self.sync_date = fields.Datetime.now()
         self.sync_uid = self.env.uid
-
-        # Finally reload Asterisk
-        self.asterisk_reload()
-
 
 
     @api.multi

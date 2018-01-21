@@ -13,6 +13,8 @@ services:
       - "./odoo/data:/opt/odoo/data"
 
   asterisk:
+    ports:
+      - 5060:5060/udp
     volumes:
-      - "./asterisk/etc/:/etc/"
+      # DONT DO THIS AS YOU LOOSE ALL /etc system files :-)  - "./asterisk/etc/:/etc/"
       - "./asterisk/services/:/services/"

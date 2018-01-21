@@ -67,7 +67,11 @@ services:
       - MANAGER_WEB_ENABLED=yes
       - MANAGER_LOGIN=odoo
       - MANAGER_PASSWORD=odoo
-    network_mode: host
+      - UID=test
+    #network_mode: host
+    networks:
+      default:
+        ipv4_address: ${ASTERISK_IP}
     ports:
       - 5038
       - 5060/udp

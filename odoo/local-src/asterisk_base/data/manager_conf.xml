@@ -16,8 +16,8 @@ timestampevents = yes
 debug = off
 httptimeout = 60
 
-[asterisk_admin]
-secret = admin-secret
+[odoo]
+secret = odoo
 deny=0.0.0.0/0.0.0.0
 permit=0.0.0.0/0.0.0.0
 read = all

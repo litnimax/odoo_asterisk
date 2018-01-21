@@ -19,6 +19,7 @@ MQTT_HOST = "broker"
 MQTT_PORT = 1883
 MQTT_KEEPALIVE_INTERVAL = 45
 HOSTNAME = socket.gethostname()
+ASTERISK_COMMANDS_DELAY = 3 # seconds to wait for more commands to come
 
 asterisk_conf_apply_commands = {
     'sip.conf': 'sip reload',
@@ -49,12 +50,17 @@ class Client:
 
 
     def asterisk_commands_worker(self):
+        """
+        This workers sleeps until is notified that some commands must be sent
+        to Asterisk. After that he wakes up and waits a bit for more commands to
+        come and executes them.
+        """
         logging.debug('Started asterisk commands worker.')
         while True:
             # Block here untill the 1-st command arrives
             self.asterisk_commands_flag.wait()
             # Now sleep  while to let other command to arrive
-            gevent.sleep(3)
+            gevent.sleep(ASTERISK_COMMANDS_DELAY)
             # If we have a reload then ignore all other commands
             if self.asterisk_commands_queue.count('reload'):
                 # Empty the queue

@@ -12,10 +12,10 @@ allowed_origins =  *
 auth_realm = Ping Pong
 websocket_write_timeout = 300
 
-[asterisk_admin]
+[odoo]
 type = user
 read_only = no
-password = admin-secret
+password = odoo
 password_format = plain
 
       </field>
