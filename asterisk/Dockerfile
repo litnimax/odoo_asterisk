@@ -1,7 +1,7 @@
 FROM alpine:edge
 
 RUN apk update && apk upgrade && \
-    apk add supervisor git python \
+    apk add supervisor git python psqlodbc \
     py2-pip py2-tornado py2-setproctitle py2-gevent py2-requests py2-paho-mqtt \
     asterisk asterisk-odbc asterisk-sample-config asterisk-sounds-en asterisk-sounds-moh asterisk-srtp
 

@@ -25,7 +25,7 @@ services:
       - "data-odoo:/data/odoo"
     environment:
       - DB_USER=odoo
-      - DB_PASS=odoo
+      - DB_PASSWORD=odoo
       - DB_NAME=asterisk
       - DB_HOST=${DB_IP:-db}
       - ADMIN_PASSWD=admin-change-me
@@ -67,7 +67,10 @@ services:
       - MANAGER_WEB_ENABLED=yes
       - MANAGER_LOGIN=odoo
       - MANAGER_PASSWORD=odoo
-      - UID=test
+      - DB_USER=odoo
+      - DB_PASSWORD=odoo
+      - DB_NAME=asterisk
+      - DB_HOST=${DB_IP:-db}
     #network_mode: host
     networks:
       default:

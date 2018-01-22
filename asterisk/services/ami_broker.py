@@ -3,6 +3,8 @@ import gevent
 from gevent.monkey import  patch_all; patch_all()
 from gevent.queue import Queue
 from gevent.pool import Event
+import base64
+import json
 import logging
 import os
 import setproctitle
@@ -12,6 +14,10 @@ from odoo_broker import OdooBroker
 
 
 logging.basicConfig(level=logging.DEBUG)
+
+MONITOR_DIR = '/var/spool/asterisk/monitor'
+DELETE_RECORDING_FAILED_UPLOAD = True # If Odoo was not able to save call recording delete in anyway
+REC_UPLOAD_DELAY = 1 # Seconds
 
 
 class AmiBroker(OdooBroker):
@@ -92,6 +98,10 @@ class AmiBroker(OdooBroker):
                 manager.register_event('PeerStatus', self.handle_asterisk_event)
                 manager.register_event('UserEvent', self.handle_asterisk_event)
                 manager.register_event('VarSet', self.handle_asterisk_event)
+                manager.register_event('Newchannel', self.handle_asterisk_event)
+                manager.register_event('NewConnectedLine', self.handle_asterisk_event)
+                manager.register_event('Newstate', self.handle_asterisk_event)
+                manager.register_event('Hangup', self.handle_asterisk_event)
                 self.ami_manager = manager
                 self.ami_disconnected.clear()
                 self.ami_connected.set()
@@ -161,12 +171,62 @@ class AmiBroker(OdooBroker):
 
 
     def on_asterisk_PeerStatus(self, event, manager):
-        logging.debug(dir(event))
-        logging.debug(event.headers)
-        if event.headers.get('ChannelType') == 'SIP':
+        get = event.headers.get
+        logging.debug('Peer: {}, Address: {}, Status: {}'.format(
+            get('Peer'), get('Address'), get('PeerStatus')))
+        if get('ChannelType') == 'SIP':
             # We only care about SIP registrations
-            return self.odoo.env['asterisk.sip_peer_status'].update_status(event.headers)
+            self.odoo.env['asterisk.sip_peer_status'].update_status(event.headers)
 
+
+    def on_asterisk_Newchannel(self, event, managers):
+        logging.debug('New channel: {}'.format(
+            json.dumps(event.headers, indent=4)))
+        self.odoo.env['asterisk.channel'].new_channel(event.headers)
+
+
+    def on_asterisk_Newstate(self, event, manager):
+        logging.debug('New state: {}'.format(
+            json.dumps(event.headers, indent=4)))
+        self.odoo.env['asterisk.channel'].update_channel_state(event.headers)
+
+
+    def on_asterisk_NewExten(self, event, manager):
+        logging.debug('New exten: {}'.format(
+            json.dumps(event.headers, indent=4)))
+        self.odoo.env['asterisk.channel'].update_channel_state(event.headers)
+
+
+    def on_asterisk_NewConnectedLine(self, event, manager):
+        logging.debug('New connected line: {}'.format(
+            json.dumps(event.headers, indent=4)))
+        self.odoo.env['asterisk.channel'].update_channel_state(event.headers)
+
+
+    def on_asterisk_Hangup(self, event, manager):
+        logging.debug('Hangup: {}'.format(
+            json.dumps(event.headers, indent=4)))
+        # Send Hangup event to Odoo
+        self.odoo.env['asterisk.channel'].hangup_channel(event.headers)
+        # Prepare to upload call recording to Odoo
+        gevent.sleep(REC_UPLOAD_DELAY)
+        logging.debug('Sending call recording.')
+        call_id = event.headers.get('Uniqueid')
+        file_path = os.path.join(MONITOR_DIR, '{}.wav'.format(call_id))
+        if not os.path.exists(file_path):
+            logging.warning('Recording for callid {} not found.'.format(
+                call_id))
+            return
+        result = self.odoo.env['asterisk.cdr'].save_call_recording(
+            call_id, base64.encodestring(open(file_path).read()))
+        if not result:
+            logging.error('Odoo save_call_recording result is False!')
+            if DELETE_RECORDING_FAILED_UPLOAD:
+                os.unlink(file_path)
+        else:
+            logging.debug('Call recording saved.')
+            os.unlink(file_path)
+        logging.debug('Call recording {} deleted.'.format(file_path))
 
 
     def on_asterisk_UserEvent(self, event, manager):

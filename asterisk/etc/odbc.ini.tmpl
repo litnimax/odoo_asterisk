@@ -2,7 +2,7 @@
 Description         = PostgreSQL connection to asterisk database
 Driver              = PostgreSQL
 Database            = {{ default .Env.DB_NAME "defaultdb" }}
-Servername          = {{ default .Env.DB_IP "defaultsrv" }}
+Servername          = {{ default .Env.DB_HOST "defaultsrv" }}
 UserName            = {{ default .Env.DB_USER "defaultuser" }}
 Password            = {{ default .Env.DB_PASSWORD "defaultpassword" }}
 Port                = {{ default .Env.DB_PORT "5432" }}
