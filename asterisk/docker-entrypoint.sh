@@ -2,7 +2,7 @@
 
 # dockerize templates
 for i in `find /etc -name '*.tmpl'`; do
-  dockerize -template "$i":"${i%%.tmpl}"
+  dockerize -template "$i":"${i%%.tmpl}" && rm "$i"
 done
 
 if [ "$1" = "" ]; then

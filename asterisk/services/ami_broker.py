@@ -32,7 +32,7 @@ class AmiBroker(OdooBroker):
         setproctitle.setproctitle('ami_broker')
         self.ami_disconnected.set()
         self.settings['AsteriskHost']  = os.environ.get(
-            'MANAGER_IP', '127.0.0.1')
+            'MANAGER_LISTEN_ADDRESS', '127.0.0.1')
         self.settings['AmiPort']  = os.environ.get(
             'MANAGER_PORT', '5038')
         self.settings['AsteriskLogin']  = os.environ.get(
@@ -41,6 +41,8 @@ class AmiBroker(OdooBroker):
             'MANAGER_PASSWORD', 'odoo')
         self.settings['AmiHeartbeatInterval']  = os.environ.get(
             'MANAGER_HEARTBEAT_INTERVAL', '10')
+        self.settings['AmiReconnectTimeout']  = int(os.environ.get(
+            'MANAGER_RECONNECT_TIMEOUT', '5'))
         self.spawn(self.ami_connection_loop)
         self.spawn(self.ami_heartbeat)
 

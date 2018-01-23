@@ -26,8 +26,8 @@
         <field name="arch" type="xml">
             <form>
               <header>
-                <button name="sync" type="object" string="Sync"
-                            icon="fa-paper-plane"  class="oe_highlight oe_read_only"/>
+                <button name="sync" type="object" string="Upload"
+                            icon="fa-upload"  class="oe_highlight oe_read_only"/>
                 </header>
                 <sheet>
                   <div class="oe_button_box oe_read_only">

@@ -16,7 +16,7 @@ from odoorpc.error import RPCError
 
 # Define Variables
 AST_ETC_DIR= "/etc/asterisk"
-AST_BINARY = "/usr/sbin/asterisk"
+ASTERISK_BINARY = os.environ.get('ASTERISK_BINARY', '/usr/sbin/asterisk')
 MQTT_HOST = "broker"
 MQTT_PORT = 1883
 MQTT_KEEPALIVE_INTERVAL = 45
@@ -123,13 +123,13 @@ class Client:
                 # Empty the queue
                 self.asterisk_commands_queue = []
                 logging.debug('Calling asterisk reload.')
-                subprocess.check_call([AST_BINARY, '-rx', 'reload'])
+                subprocess.check_call([ASTERISK_BINARY, '-rx', 'reload'])
             else:
                 while len(self.asterisk_commands_queue):
                     # Pop commands and apply one by one
                     cmd = self.asterisk_commands_queue.pop()
                     logging.debug('Calling asterisk {}.'.format(cmd))
-                    subprocess.check_call([AST_BINARY, '-rx', cmd])
+                    subprocess.check_call([ASTERISK_BINARY, '-rx', cmd])
                 # CLear the flag
             self.asterisk_commands_flag.clear()
 

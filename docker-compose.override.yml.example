@@ -19,6 +19,7 @@ services:
   asterisk:
     ports:
       - 5060:5060/udp
+      - 8010:8010
     environment:
       - UID=test
     volumes:

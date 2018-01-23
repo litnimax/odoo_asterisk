@@ -82,10 +82,15 @@ services:
       - MANAGER_WEB_ENABLED=yes
       - MANAGER_LOGIN=odoo
       - MANAGER_PASSWORD=odoo
+      - MANAGER_PORT=5038
+      - MANAGER_LISTEN_ADDRESS=127.0.0.1
+      - HTTP_LISTEN_ADDRESS=127.0.0.1
+      - HTTP_PORT=8088
       - DB_USER=odoo
       - DB_PASSWORD=odoo
       - DB_NAME=asterisk
       - DB_HOST=${DB_IP:-db}
+      - ASTERISK_BINARY=/usr/sbin/asterisk
     #network_mode: host
     networks:
       default:

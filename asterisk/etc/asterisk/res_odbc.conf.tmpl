@@ -1,10 +1,6 @@
-[ENV]
-
 [odoo]
-connection=odoo
-loguniqueid=yes
-table=asterisk_cdr
-alias start => started
-alias answer => answered
-alias end => ended
-usegmtime=yes
+enabled => yes
+dsn => PostgreSQL-odoo
+username => {{ default .Env.DB_USER "odoo" }}
+password => {{ default .Env.DB_PASSWORD "odoo" }}
+pre-connect => yes

@@ -21,6 +21,6 @@ RUN pip install -r /services/requirements.txt
 
 COPY ./docker-entrypoint.sh /
 
-EXPOSE 5060/udp 8088 5038
+EXPOSE 5060/udp 5038 8088 8010
 
 ENTRYPOINT ["/docker-entrypoint.sh"]

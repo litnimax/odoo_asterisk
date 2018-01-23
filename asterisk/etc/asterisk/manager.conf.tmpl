@@ -2,7 +2,7 @@
 enabled = {{ default .Env.MANAGER_ENABLED "no" }}
 webenabled = {{ default .Env.MANAGER_WEB_ENABLED "no" }}
 port = 5038
-bindaddr = {{ default .Env.BRIDGE_IP "127.0.0.1" }}
+bindaddr = {{ default .Env.MANAGER_LISTEN_ADDRESS "127.0.0.1" }}
 
 [{{ default .Env.MANAGER_LOGIN "manager" }}]
 secret={{ default .Env.MANAGER_PASSWORD "secret" }}

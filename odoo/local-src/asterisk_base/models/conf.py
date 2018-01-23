@@ -24,9 +24,9 @@ class AsteriskConf(models.Model):
     ]
 
 
-    def sync_conf(self):
+    def upload_conf(self):
         self.ensure_one()
-        self.server.sync_conf(self)
+        self.server.upload_conf(self)
         #self.server.asterisk_reload()
         # Update last sync
         self.sync_date = fields.Datetime.now()

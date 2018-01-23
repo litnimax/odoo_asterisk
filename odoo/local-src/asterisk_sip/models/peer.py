@@ -171,9 +171,9 @@ class SipPeer(models.Model):
         # Save config
         sip_auto_conf.content = content
         if found_include:
-            sip_auto_conf.sync_conf()
+            sip_auto_conf.upload_conf()
         else:
-            sip_auto_conf.server.sync_all_conf()
+            sip_auto_conf.server.upload_all_conf()
 
 
     @api.multi
