@@ -15,8 +15,6 @@
       <field name="model">asterisk.server</field>
       <field name="arch" type="xml">
           <tree>
-              <button name="sync_all_conf" type="object"
-                icon="fa-paper-plane" class="oe_highlight"/>
               <field name="name"/>
               <field name="uid"/>
               <field name="host"/>
@@ -35,8 +33,10 @@
       <field name="arch" type="xml">
           <form>
               <header>
-                  <button name="sync_all_conf" type="object" icon="fa-paper-plane"
-                      string="Sync Configuration" class="oe_highlight"/>
+                  <button name="upload_all_conf" type="object" icon="fa-upload"
+                      string="Upload Conf Files" class="oe_highlight"/>
+                  <button name="download_all_conf" type="object" icon="fa-download"
+                      string="Download Conf Files" class="oe_highlight"/>
               </header>
               <sheet>
                 <notebook>

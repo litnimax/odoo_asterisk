@@ -12,6 +12,10 @@ services:
       - "./odoo/migration.yml:/opt/odoo/migration.yml"
       - "./odoo/data:/opt/odoo/data"
 
+  #odoo_mqtt_broker:
+  #  volumes:
+  #    - "./odoo_mqtt_broker/odoo_mqtt_broker.py:/odoo_mqtt_broker.py"
+
   asterisk:
     ports:
       - 5060:5060/udp

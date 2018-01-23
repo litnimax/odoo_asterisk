@@ -12,23 +12,6 @@ import odoorpc
 
 logging.basicConfig(level=logging.DEBUG)
 
-def check_odoo(func):
-    # Decorator for all on_* events.
-    def wrapper(odoo_broker, *args, **kwargs):
-        if  odoo_broker.odoo_disconnected.is_set():
-            logging.error('Cannot make the request, not connected to Odoo.')
-        else:
-            try:
-                return func(odoo_broker, *args, **kwargs)
-            except urllib2.URLError as e:
-                odoo_broker.odoo_connected.clear()
-                odoo_broker.odoo_disconnected.set()
-
-                logging.error('Error: {}\n{}'.format(e,
-                    traceback.format_exc()))
-    return wrapper
-
-
 class OdooBroker(object):
     odoo = None
     odoo_disconnected = Event()
@@ -45,7 +28,7 @@ class OdooBroker(object):
         self.settings['OdooDb'] = os.environ.get('ODOO_DB', 'asterisk')
         self.settings['OdooUser'] = os.environ.get('ODOO_USER', 'admin')
         self.settings['OdooPassword'] = os.environ.get('ODOO_PASSWORD', 'admin')
-        self.settings['OdooReconnectTimeout'] = os.environ.get('ODOO_RECONNECT_TIMEOUT', '5')
+        self.settings['OdooReconnectTimeout'] = int(os.environ.get('ODOO_RECONNECT_TIMEOUT', '5'))
         self.greenlets.append(gevent.spawn(self.connect_odoo_loop))
 
     def stop(self):

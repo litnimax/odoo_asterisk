@@ -7,10 +7,10 @@ _logger = logging.getLogger(__name__)
 class AsteriskConf(models.Model):
     _name = 'asterisk.conf'
     _description = 'Configuration Files'
-    _rec_name = 'filename'
-    _order = 'filename'
+    _rec_name = 'name'
+    _order = 'name'
 
-    filename = fields.Char(required=True)
+    name = fields.Char(required=True)
     server = fields.Many2one(comodel_name='asterisk.server', required=True)
     content = fields.Text()
     sync_date = fields.Datetime(readonly=True)
@@ -19,7 +19,7 @@ class AsteriskConf(models.Model):
 
 
     _sql_constraints = [
-        ('filename_server_idx', 'unique(filename,server)',
+        ('name_server_idx', 'unique(name,server)',
             _('This file already exists on this server.')),
     ]
 

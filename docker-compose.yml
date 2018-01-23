@@ -42,6 +42,19 @@ services:
     extra_hosts:
       - asterisk:${BRIDGE_IP}
 
+  #odoo_mqtt_broker:
+  #  build: ./odoo_mqtt_broker
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - odoo
+  #    - broker
+  #  environment:
+  #    - MQTT_HOST=${BROKER_IP}
+  #    - ODOO_IP=${ODOO_IP:-odoo}
+  #    - ODOO_DB=asterisk
+  #    - ODOO_USER=admin
+  #    - ODOO_PASSWORD=admin
+
   nginx:
     image: camptocamp/odoo-nginx:9.0-1.1.0
     depends_on:
@@ -51,6 +64,8 @@ services:
     networks:
       default:
         ipv4_address: ${NGINX_IP}
+    extra_hosts:
+        - odoo:${ODOO_IP}
 
   asterisk:
     build:  asterisk

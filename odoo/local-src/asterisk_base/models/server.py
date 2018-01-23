@@ -43,14 +43,14 @@ class AsteriskServer(models.Model):
     _name = 'asterisk.server'
 
     name = fields.Char(required=True)
-    uid = fields.Char(string='UID')
-    host = fields.Char(required=True)
+    uid = fields.Char(string='UID', unique=True)
+    host = fields.Char()
     note = fields.Text()
-    ami_username = fields.Char(required=True, string='AMI username')
-    ami_password = fields.Char(required=True, string='AMI password')
-    ami_port = fields.Integer(required=True, default=5038, string='AMI port')
-    http_port = fields.Integer(required=True, default=8088, string='HTTP port')
-    https_port = fields.Integer(required=True, default=8089, string='HTTPS port')
+    ami_username = fields.Char(string='AMI username')
+    ami_password = fields.Char(string='AMI password')
+    ami_port = fields.Integer(default=5038, string='AMI port')
+    http_port = fields.Integer(default=8088, string='HTTP port')
+    https_port = fields.Integer(default=8089, string='HTTPS port')
     use_https = fields.Boolean(string='Use HTTPS')
     certificate = fields.Text(string='TLS certificate')
     key = fields.Text(string='TLS private key')
@@ -62,7 +62,9 @@ class AsteriskServer(models.Model):
                           default='ws://localhost:8010/websocket')
     cli_area = fields.Text(compute='_get_cli_area', inverse='_set_cli_area')
 
-
+    _sql_constraints = [
+        ('uid_unique', 'UNIQUE(uid)', 'This UID is already used.'),
+    ]
 
     @api.multi
     def _get_cli_area(self):
@@ -101,33 +103,41 @@ class AsteriskServer(models.Model):
         response = ajam.command(command)
 
 
-    def sync_conf(self, conf):
+    def upload_conf(self, conf):
         broker_host = self.env['ir.config_parameter'].get_param(
             'asterisk.mqtt_server', 'nonresolvable.hz')
-        _logger.debug('Syncing {} @ {} via {}...'.format(
-            conf.filename,
+        _logger.debug('Uploading {} @ {} via {}...'.format(
+            conf.name,
             conf.server.name,
             broker_host))
         topic = 'asterisk/' + self.uid + '/file'
         msg = {
             'Content': conf.content,
-            'FileName': conf.filename,
+            'Name': conf.name,
             'DestinationFolder': '/etc/asterisk',
         }
-        publish.single(topic, json.dumps(msg), hostname=broker_host, retain=True)
+        publish.single(topic, json.dumps(msg), hostname=broker_host)
 
 
-    def sync_all_conf(self):
+    def upload_all_conf(self):
         self.ensure_one()
         if self.no_asterisk_mode():
             _logger.warning('No Asterisk mode enabled, not doing anything.')
             return
         # Start sending config files to the server
         for conf in self.conf_files:
-            self.sync_conf(conf)
+            self.upload_conf(conf)
         # Update last sync
         self.sync_date = fields.Datetime.now()
         self.sync_uid = self.env.uid
+
+
+    def download_all_conf(self, conf):
+        broker_host = self.env['ir.config_parameter'].get_param(
+            'asterisk.mqtt_server', 'nonresolvable.hz')
+        _logger.debug('Sending download request for all files.')
+        topic = 'asterisk/' + self.uid + '/upload_asterisk_configs'
+        publish.single(topic, '', hostname=broker_host)
 
 
     @api.multi

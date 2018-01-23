@@ -122,17 +122,17 @@ class SipPeer(models.Model):
         self.ensure_one()
         found_include = False
         sip_auto_conf = self.env['asterisk.conf'].search(['&',
-            ('filename', '=', 'sip_auto_peers.conf'),
+            ('name', '=', 'sip_auto_peers.conf'),
             ('server', '=', self.server.id)])
         if not sip_auto_conf:
             sip_auto_conf = self.env['asterisk.conf'].create({
                 'server': self.server.id,
-                'filename': 'sip_auto_peers.conf',
+                'name': 'sip_auto_peers.conf',
             })
         # Now let see if sip.conf includes sip_auto_peers
         sip_conf = self.env['asterisk.conf'].search(['&',
             ('server', '=', self.server.id),
-            ('filename', '=', 'sip.conf')])
+            ('name', '=', 'sip.conf')])
         for line in sip_conf.content.split('\n'):
             if line.find('#tryinclude sip_auto_peers.conf') != -1:
                 found_include = True

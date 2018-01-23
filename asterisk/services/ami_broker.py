@@ -9,7 +9,6 @@ import logging
 import os
 import setproctitle
 import asterisk.manager
-import odoorpc
 from odoo_broker import OdooBroker
 
 

@@ -15,7 +15,7 @@
       <field name="model">asterisk.conf</field>
       <field name="arch" type="xml">
           <tree>
-              <field name="filename"/>
+              <field name="name"/>
               <field name="server"/>
           </tree>
       </field>
@@ -32,8 +32,8 @@
             </header>
               <sheet>
                 <div name="title" class="oe_title">
-                    <label for="filename" class="oe_edit_only"/>
-                    <h1><field name="filename"/> @ <field name="server" options="{'no_create': '1'}"/></h1>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/> @ <field name="server" options="{'no_create': '1'}"/></h1>
                 </div>
                 <notebook>
                   <page string="Content">
@@ -64,7 +64,7 @@
     <field name="model">asterisk.conf</field>
     <field name="arch" type="xml">
       <search>
-        <field name="filename"/>
+        <field name="name"/>
         <field name="server"/>
         <filter string="Server" context="{'group_by': 'server'}"/>
       </search>
