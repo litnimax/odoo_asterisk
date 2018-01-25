@@ -73,22 +73,6 @@ if [ ! -f "$CONFIGDIR/odoo.cfg" ]; then
   exit 1
 fi
 
-#if [ -z "$(pip list --format=columns | grep "/opt/odoo/src")" ]; then
-#  # The build runs 'pip install -e' on the odoo src, which creates an
-#  # odoo.egg-info directory *inside /opt/odoo/src*. So when we run a container
-#  # with a volume shared with the host, we don't have this .egg-info (at least
-#  # the first time).
-#  # When it happens, we reinstall the odoo python package. We don't want to run
-#  # the install everytime because it would slow the start of the containers
-#  echo '/opt/odoo/src/odoo.egg-info is missing, probably because the directory is a volume.'
-#  echo 'Running pip install -e /opt/odoo/src to restore odoo.egg-info'
-#  pip install -e $BASEDIR/src
-#  # As we write in a volume, ensure it has the same user.
-#  # So when the src is a host volume and we set the LOCAL_USER_ID to be the
-#  # host user, the files are owned by the host user
-#  chown -R odoo: /opt/odoo/src/odoo.egg-info
-#fi
-
 # Wait until postgres is up
 $BINDIR/wait_postgres.sh
 

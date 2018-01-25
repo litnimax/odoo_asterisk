@@ -91,6 +91,8 @@ services:
       - DB_NAME=asterisk
       - DB_HOST=${DB_IP:-db}
       - ASTERISK_BINARY=/usr/sbin/asterisk
+      - CONSOLE_LISTEN_ADDRESS=0.0.0.0
+      - CONSOLE_LISTEN_PORT=8010
     #network_mode: host
     networks:
       default:
