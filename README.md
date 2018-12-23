@@ -1,3 +1,12 @@
+# NOTE
+**This project was a prototype. This code base is abondoned and is not supported.**
+
+As a result of experience of this work new solution was sucessfully implemented.
+
+Visit it here:
+
+## [Asterisk base PBX application](https://apps.odoo.com/apps/modules/10.0/asterisk_base/)
+
 # Asterisk inside Odoo - PBX & Dev platform
 Imagine all Asterisk PBX features covered around by Odoo.
 
