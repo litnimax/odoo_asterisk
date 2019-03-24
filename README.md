@@ -5,8 +5,8 @@ As a result of experience of this work new solutions were sucessfully implemente
 
 Visit it here:
 
-## [Asterisk Calls](https://apps.odoo.com/apps/modules/12.0/asterisk_calls/)
-## [Asterisk Base](https://apps.odoo.com/apps/modules/12.0/asterisk_base/)
+* [Asterisk Calls](https://apps.odoo.com/apps/modules/12.0/asterisk_calls/)
+* [Asterisk Base](https://apps.odoo.com/apps/modules/12.0/asterisk_base/)
 
 # Asterisk inside Odoo - PBX & Dev platform
 Imagine all Asterisk PBX features covered around by Odoo.
