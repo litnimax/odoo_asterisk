@@ -1,5 +1,5 @@
 # NOTE
-**This project was a prototype. This code base is abondoned and is not supported.**
+**This project was a prototype. This code base is abandoned and is not supported.**
 
 As a result of experience of this work new solutions were sucessfully implemented.
 
