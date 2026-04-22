@@ -1,5 +1,5 @@
 # NOTE
-**This project was a prototype. Got to oduist.com for the production Asterisk integration.**
+**This project was a prototype. Please visit [Oduist.com](https://oduist.com) to get the production grade Asterisk / FreeSWITCH / Twilio integration with Odoo.**
 
 As a result of experience of this work new solutions were sucessfully implemented.
 
