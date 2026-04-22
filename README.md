@@ -1,5 +1,5 @@
 # NOTE
-**This project was a prototype. This code base is abandoned and is not supported.**
+**This project was a prototype. Got to oduist.com for the production Asterisk integration.**
 
 As a result of experience of this work new solutions were sucessfully implemented.
 
